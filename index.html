@@ -55,8 +55,8 @@
             --bg-card: #fff0f3;
             --text-main: #5c4d6c;
             --text-muted: #9c89b8;
-            --primary: #ffb5a7;
-            --primary-hover: #fcd5ce;
+            --primary: #e58b99; /* Oscurecido ligeramente para legibilidad del texto blanco */
+            --primary-hover: #d37685;
             --border-color: #f8edeb;
             --modal-overlay: rgba(255, 181, 167, 0.4);
             --timeline-bar: #fcd5ce;
@@ -65,6 +65,14 @@
         [data-font="sans"] { --font-family: 'Inter', sans-serif; }
         [data-font="serif"] { --font-family: 'Merriweather', serif; }
         [data-font="cursive"] { --font-family: 'Caveat', cursive; font-size: 1.1em; }
+
+        /* Helpers de color dinámico para solucionar opacidades con Variables CSS */
+        .bg-primary-5 { background-color: color-mix(in srgb, var(--primary) 5%, transparent); }
+        .bg-primary-10 { background-color: color-mix(in srgb, var(--primary) 10%, transparent); }
+        .bg-main-30 { background-color: color-mix(in srgb, var(--bg-main) 30%, transparent); }
+        .bg-main-50 { background-color: color-mix(in srgb, var(--bg-main) 50%, transparent); }
+        .border-primary-20 { border-color: color-mix(in srgb, var(--primary) 20%, transparent); }
+        .border-primary-30 { border-color: color-mix(in srgb, var(--primary) 30%, transparent); }
 
         body {
             background-color: var(--bg-main);
@@ -217,7 +225,7 @@
     <div class="kawaii-element" style="top: 30%; left: 80%; animation-delay: 4s;">🦋</div>
     <div class="kawaii-element" style="top: 70%; left: 70%; animation-delay: 1s;">🍡</div>
 
-    <nav class="sticky top-0 z-40 backdrop-blur-md bg-[var(--bg-card)] bg-opacity-90 border-b border-[var(--border-color)] shadow-sm p-3 sm:p-4 flex justify-between items-center">
+    <nav class="sticky top-0 z-40 backdrop-blur-md border-b border-[var(--border-color)] shadow-sm p-3 sm:p-4 flex justify-between items-center" style="background-color: color-mix(in srgb, var(--bg-card) 90%, transparent);">
         <div class="flex items-center gap-2 sm:gap-3 cursor-pointer" onclick="navigate('home')">
             <i class="fas fa-feather-alt text-2xl sm:text-3xl text-[var(--primary)] shrink-0"></i>
             <h1 class="text-xl sm:text-2xl font-bold tracking-tight shrink-0">¡Escribe!</h1>
@@ -318,7 +326,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-xl">Personajes</h3>
-                            <p class="text-sm text-[var(--text-muted)] mt-1 line-clamp-2">Fichas múltiples: Deseo, Necesidad, Notas.</p>
+                            <p class="text-sm text-[var(--text-muted)] mt-1 line-clamp-2">Fichas múltiples, Vínculos, Deseo, Necesidad.</p>
                         </div>
                     </div>
                 </div>
@@ -600,7 +608,7 @@
         <div class="card rounded-3xl shadow-2xl relative z-10 w-full max-w-3xl p-6 h-[85vh] flex flex-col">
             <div class="flex justify-between items-center mb-4 pb-3 border-b border-[var(--border-color)]">
                 <div class="flex items-center gap-3">
-                    <div class="p-2 bg-[var(--primary)] bg-opacity-10 rounded-xl"><i class="fas fa-layer-group text-[var(--primary)] text-xl"></i></div>
+                    <div class="p-2 bg-primary-10 rounded-xl"><i class="fas fa-layer-group text-[var(--primary)] text-xl"></i></div>
                     <div>
                         <h2 class="text-2xl font-bold">Referencias del Proyecto</h2>
                         <p class="text-xs text-[var(--text-muted)]">Consulta tus notas y estructuración rápidamente.</p>
@@ -623,7 +631,7 @@
                     <label class="block text-xs font-bold uppercase tracking-wider mb-2">Título del Evento <span class="text-red-500">*</span></label>
                     <input type="text" id="ev-title" class="w-full p-3 rounded-xl font-bold text-lg" placeholder="Ej. La Batalla Final">
                 </div>
-                <div class="bg-[var(--primary)] bg-opacity-5 p-4 rounded-2xl border border-[var(--primary)] border-opacity-20">
+                <div class="bg-primary-5 p-4 rounded-2xl border border-primary-20">
                     <label class="block text-xs font-bold uppercase tracking-wider mb-3 text-[var(--primary)]">Coordenadas Temporales Relativas</label>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         <div class="col-span-2 sm:col-span-3">
@@ -658,7 +666,7 @@
                 </div>
             </div>
             <div class="mt-8 flex justify-between items-center">
-                <button type="button" id="btn-delete-ev" onclick="deleteTimelineEvent()" class="text-red-500 hover:bg-red-50 px-4 py-2 rounded-xl font-bold text-sm hidden transition-colors"><i class="fas fa-trash-alt"></i> Borrar</button>
+                <button type="button" id="btn-delete-ev" onclick="deleteTimelineEvent()" class="text-red-500 hover:bg-red-500/10 px-4 py-2 rounded-xl font-bold text-sm hidden transition-colors"><i class="fas fa-trash-alt"></i> Borrar</button>
                 <div class="flex gap-3 ml-auto">
                     <button onclick="closeModal('timeline-event')" class="px-5 py-2.5 rounded-xl text-[var(--text-muted)] font-bold text-sm hover:bg-[var(--border-color)]">Cancelar</button>
                     <button onclick="saveTimelineEvent()" class="btn-primary px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg">Guardar</button>
@@ -709,7 +717,7 @@
 
     <div id="tour-popover" class="fixed z-[10002] card p-4 rounded-2xl shadow-2xl w-[260px] sm:w-[280px] hidden transition-all duration-200 border-2 border-[var(--primary)] text-left">
         <div class="flex justify-between items-center mb-2">
-            <span id="tour-pop-step" class="text-[10px] font-bold uppercase tracking-wider text-[var(--primary)] bg-[var(--primary)] bg-opacity-10 px-2 py-0.5 rounded-full">1 / 8</span>
+            <span id="tour-pop-step" class="text-[10px] font-bold uppercase tracking-wider text-[var(--primary)] bg-primary-10 px-2 py-0.5 rounded-full">1 / 8</span>
             <button onclick="endGuidedTour()" class="text-[var(--text-muted)] hover:text-red-500 text-xs font-bold transition-colors">Cerrar</button>
         </div>
         <h3 id="tour-pop-title" class="text-[15px] font-bold mb-1"></h3>
@@ -1330,6 +1338,9 @@
                 if (p.chapters && p.chapters.length > 0) {
                     p.chapters.forEach(c => {
                         txt += `[ ${c.title.toUpperCase()} ]\n\n`;
+                        if(c.summary) txt += `RESUMEN: ${c.summary}\n`;
+                        if(c.cliffhanger) txt += `CLIFFHANGER: ${c.cliffhanger}\n`;
+                        if(c.summary || c.cliffhanger) txt += `\n`;
                         txt += c.content ? `${c.content}\n\n` : `(Sin contenido redactado)\n\n`;
                         txt += `------------------------------------------------------------------------\n\n`;
                     });
@@ -1365,6 +1376,16 @@
                         if(c.appearance && c.appearance.trim()) txt += `>> APARIENCIA:\n${c.appearance}\n`;
                         if(c.notes && c.notes.trim()) txt += `>> NOTAS / BIO:\n${c.notes}\n`;
                         if(c.minigameAnswers && c.minigameAnswers.trim()) txt += `>> RESPUESTAS AL MINIJUEGO:\n${c.minigameAnswers}\n`;
+                        
+                        if(c.relationships && c.relationships.length > 0) {
+                            txt += `>> RELACIONES:\n`;
+                            c.relationships.forEach(rel => {
+                                const targetC = p.characters.find(x => x.id === rel.withCharId);
+                                const targetName = targetC ? targetC.name : 'Desconocido';
+                                txt += `   - Con ${targetName} (${rel.label || 'Vínculo no definido'}): ${rel.details || ''}\n`;
+                            });
+                        }
+                        
                         txt += `\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n\n`;
                     });
                 } else { txt += `(No hay personajes creados)\n\n`; }
@@ -1401,7 +1422,7 @@
                         if(ev.desc && ev.desc.trim()) txt += `${ev.desc}\n`;
                         txt += `\n`;
                     });
-                } else { txt += `(No hay eventos creados)\n\n`; }
+                } else { txt += `(No hay eventos creado)\n\n`; }
             }
             
             // Datos estructurados para importación
@@ -1528,17 +1549,18 @@
                 window.APP_STATE.projects.forEach(p => {
                     const dateStr = new Date(p.updatedAt).toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric'});
                     const card = document.createElement('div');
-                    card.className = "card card-hover p-6 rounded-3xl cursor-pointer flex flex-col justify-between h-52 group relative";
+                    card.className = "card card-hover p-6 rounded-3xl cursor-pointer flex flex-col justify-between min-h-[13rem] h-auto group relative";
                     card.onclick = () => { window.APP_STATE.activeProjectId = p.id; window.navigate('project'); };
+                    
                     card.innerHTML = `
-                        <div>
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="text-xl font-bold truncate pr-6">${escapeHtml(p.title)}</h3>
-                                <button onclick="event.stopPropagation(); window.deleteProject('${p.id}')" class="text-[var(--text-muted)] hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-2"><i class="fas fa-trash-alt"></i></button>
+                        <div class="mb-4">
+                            <div class="flex justify-between items-start mb-3 gap-2">
+                                <h3 class="text-xl font-bold break-words leading-snug">${escapeHtml(p.title)}</h3>
+                                <button onclick="event.stopPropagation(); window.deleteProject('${p.id}')" class="text-red-500 hover:bg-red-500/10 opacity-100 transition-colors p-2 rounded-lg text-lg shrink-0"><i class="fas fa-trash-alt"></i></button>
                             </div>
                             <p class="text-sm text-[var(--text-muted)]"><i class="fas fa-users mr-1"></i> ${(p.characters||[]).length} PJs | <i class="fas fa-pen mr-1 ml-2"></i> ${(p.chapters||[]).length} Caps</p>
                         </div>
-                        <div class="flex justify-between items-center text-xs font-bold text-[var(--text-muted)] border-t border-[var(--border-color)] pt-4">
+                        <div class="flex justify-between items-center text-xs font-bold text-[var(--text-muted)] border-t border-[var(--border-color)] pt-4 mt-auto">
                             <span>Modificado: ${dateStr}</span>
                             <span class="text-[var(--primary)] group-hover:translate-x-1 transition-transform">Abrir &rarr;</span>
                         </div>
@@ -1559,7 +1581,6 @@
             if(!p) return;
             const titleInput = document.getElementById('project-title-input');
             titleInput.value = p.title;
-            // Asegurarse de que el textarea crezca para abarcar todo el título
             setTimeout(() => {
                 titleInput.style.height = 'auto';
                 titleInput.style.height = titleInput.scrollHeight + 'px';
@@ -1639,7 +1660,7 @@
                         <div class="flex justify-between items-center p-4 bg-[var(--bg-card)] border-b border-[var(--border-color)] cursor-pointer hover:bg-[var(--bg-main)] transition-colors" onclick="toggleLocationCard('${loc.id}')">
                             <h4 id="loc-title-${loc.id}" class="font-bold text-[var(--text-main)] truncate pr-4">${escapeHtml(loc.name)}</h4>
                             <div class="flex items-center gap-3 shrink-0">
-                                <button onclick="event.stopPropagation(); window.deleteLocation('${loc.id}')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg opacity-70 hover:opacity-100 transition-opacity"><i class="fas fa-trash-alt"></i></button>
+                                <button onclick="event.stopPropagation(); window.deleteLocation('${loc.id}')" class="text-red-500 hover:bg-red-500/10 p-2 rounded-lg opacity-70 hover:opacity-100 transition-opacity"><i class="fas fa-trash-alt"></i></button>
                                 <i class="fas fa-chevron-down text-[var(--text-muted)] transition-transform duration-300" id="loc-icon-${loc.id}"></i>
                             </div>
                         </div>
@@ -1686,7 +1707,6 @@
                 
                 if(field.id === 'notes') div.classList.add('border-t-8', 'border-t-[var(--primary)]', 'lg:col-span-2');
                 
-                // Trato específico para el campo Localizaciones
                 if (field.type === 'custom-locations') {
                     div.classList.add('lg:col-span-2', 'p-0', 'bg-transparent', 'border-0', 'shadow-none');
                     div.innerHTML = `
@@ -1695,7 +1715,7 @@
                                 <span class="flex items-center gap-3 text-xl text-[var(--primary)]"><i class="fas fa-map-marked-alt w-6 text-center text-2xl"></i> ${field.label}</span>
                                 <i class="fas fa-chevron-down transition-transform duration-300 text-[var(--text-muted)] text-xl" id="icon-locations"></i>
                             </button>
-                            <div id="locations-container" class="hidden p-6 border-t border-[var(--border-color)] bg-[var(--bg-main)] bg-opacity-30 flex-1">
+                            <div id="locations-container" class="hidden p-6 border-t border-[var(--border-color)] bg-main-30 flex-1">
                                 <button onclick="addLocation()" class="btn-primary px-5 py-3 rounded-xl mb-6 text-sm font-bold shadow flex items-center justify-center gap-2 w-full sm:w-auto"><i class="fas fa-plus"></i> Nueva Localización</button>
                                 <div id="locations-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                             </div>
@@ -1708,7 +1728,7 @@
                             <i class="fas ${field.icon} text-xl"></i> ${field.label}
                         </h3>
                         <textarea oninput="window.updateSectionField('${secId}', '${field.id}', this.value)" 
-                                  class="auto-expand p-4 rounded-xl text-sm sm:text-base leading-relaxed bg-opacity-50 w-full" 
+                                  class="auto-expand p-4 rounded-xl text-sm sm:text-base leading-relaxed bg-main-50 w-full" 
                                   placeholder="${field.placeholder}">${escapeHtml(val)}</textarea>
                     `;
                 }
@@ -1737,7 +1757,7 @@
         window.createNewChapter = function(render = true) {
             const p = getActiveProject();
             if(!p.chapters) p.chapters = [];
-            const newChap = { id: 'chap_' + Date.now(), title: "Capítulo " + (p.chapters.length + 1), content: "" };
+            const newChap = { id: 'chap_' + Date.now(), title: "Capítulo " + (p.chapters.length + 1), content: "", summary: "", cliffhanger: "" };
             p.chapters.push(newChap);
             window.APP_STATE.activeChapterId = newChap.id;
             p.updatedAt = Date.now(); saveData();
@@ -1762,7 +1782,7 @@
 
             p.chapters.forEach(c => {
                 const isActive = c.id === window.APP_STATE.activeChapterId;
-                const activeClass = isActive ? 'border-2 border-[var(--primary)] bg-[var(--primary)] bg-opacity-10' : 'hover:border-[var(--primary)]';
+                const activeClass = isActive ? 'border-2 border-[var(--primary)] bg-primary-10' : 'hover:border-[var(--primary)]';
                 
                 const d = document.createElement('div');
                 d.className = `card p-4 rounded-2xl cursor-pointer transition-all flex justify-between items-center ${activeClass}`;
@@ -1775,7 +1795,7 @@
                         <h4 class="font-bold truncate text-sm">${escapeHtml(c.title)}</h4>
                         <span class="text-xs text-[var(--text-muted)] font-serif italic line-clamp-1 mt-1">${escapeHtml(snippet)}</span>
                     </div>
-                    <button onclick="event.stopPropagation(); window.deleteChapter('${c.id}')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg opacity-50 hover:opacity-10 ml-2"><i class="fas fa-trash-alt"></i></button>
+                    <button onclick="event.stopPropagation(); window.deleteChapter('${c.id}')" class="text-red-500 hover:bg-red-500/10 p-2 rounded-lg opacity-50 hover:opacity-10 ml-2"><i class="fas fa-trash-alt"></i></button>
                 `;
                 listDiv.appendChild(d);
             });
@@ -1785,15 +1805,25 @@
 
             const wordCount = chap.content ? chap.content.trim().split(/\s+/).filter(w => w.length > 0).length : 0;
 
-            // Se han eliminado las clases "flex-1" y "overflow-hidden" del textarea para permitir la expansión vertical sin restricciones del flex padre
             editDiv.innerHTML = `
                 <div class="card rounded-3xl p-6 sm:p-10 shadow-sm flex flex-col border-t-8 border-t-[var(--primary)] min-h-full">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-[var(--border-color)] pb-4 gap-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                         <textarea id="chapter-title-textarea" rows="1" oninput="window.updateChapter('title', this.value); this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px';" class="clean-input w-full text-[var(--text-main)] text-2xl sm:text-3xl font-bold font-serif resize-none overflow-hidden" style="min-height: 40px; height: auto;" placeholder="Nombre del Capítulo">${escapeHtml(chap.title)}</textarea>
                         
                         <span id="word-counter" class="shrink-0 text-xs sm:text-sm font-bold text-[var(--primary)] bg-[var(--bg-main)] px-3 py-1.5 rounded-xl whitespace-nowrap border border-[var(--border-color)] shadow-sm transition-colors flex items-center gap-2 self-start sm:self-auto">
                             <i class="fas fa-pen-nib"></i> <span>${wordCount} ${wordCount === 1 ? 'palabra' : 'palabras'}</span>
                         </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 border-b border-[var(--border-color)] pb-6">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-[var(--primary)]"><i class="fas fa-list-alt"></i> Resumen del Capítulo</label>
+                            <textarea oninput="window.updateChapter('summary', this.value)" class="auto-expand w-full p-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-main)] text-sm leading-relaxed" placeholder="¿Qué ocurre en este capítulo?">${escapeHtml(chap.summary || '')}</textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-[var(--primary)]"><i class="fas fa-exclamation-circle"></i> Plot Twist / Cliffhanger</label>
+                            <textarea oninput="window.updateChapter('cliffhanger', this.value)" class="auto-expand w-full p-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-main)] text-sm leading-relaxed" placeholder="¿Cómo termina el capítulo o qué revelación hay?">${escapeHtml(chap.cliffhanger || '')}</textarea>
+                        </div>
                     </div>
                     
                     <textarea id="main-editor-textarea" oninput="window.updateChapterContent(this)" class="auto-expand w-full p-2 rounded-xl text-lg leading-loose font-serif bg-transparent text-[var(--text-main)] focus:outline-none placeholder:italic placeholder:text-[var(--text-muted)]" placeholder="Érase una vez...">${escapeHtml(chap.content || '')}</textarea>
@@ -1803,6 +1833,7 @@
             setTimeout(() => {
                 const ta = document.getElementById('main-editor-textarea');
                 if(ta) autoExpandNode(ta);
+                triggerAutoExpands();
                 const titleTa = document.getElementById('chapter-title-textarea');
                 if(titleTa) { titleTa.style.height = 'auto'; titleTa.style.height = titleTa.scrollHeight + 'px'; }
             }, 10);
@@ -1845,7 +1876,7 @@
 
         window.createNewCharacter = function(render = true) {
             const p = getActiveProject();
-            const newChar = { id: 'char_' + Date.now(), name: "Nuevo Personaje", role: "Protagonista", desire: "", need: "", appearance: "", notes: "", brainstorming: "", minigameAnswers: "" };
+            const newChar = { id: 'char_' + Date.now(), name: "Nuevo Personaje", role: "Protagonista", desire: "", need: "", appearance: "", notes: "", brainstorming: "", minigameAnswers: "", relationships: [] };
             p.characters.push(newChar);
             window.APP_STATE.activeCharacterId = newChar.id;
             p.updatedAt = Date.now(); saveData();
@@ -1862,6 +1893,37 @@
             }
         };
 
+        window.addRelationship = function() {
+            const p = getActiveProject();
+            const c = p.characters.find(ch => ch.id === window.APP_STATE.activeCharacterId);
+            if(c) {
+                if(!c.relationships) c.relationships = [];
+                c.relationships.push({ withCharId: '', label: '', details: '' });
+                p.updatedAt = Date.now(); debounceSave();
+                window.renderCharactersSection();
+            }
+        };
+        
+        window.updateRelationship = function(idx, field, val) {
+            const p = getActiveProject();
+            const c = p.characters.find(ch => ch.id === window.APP_STATE.activeCharacterId);
+            if(c && c.relationships && c.relationships[idx]) {
+                c.relationships[idx][field] = val;
+                p.updatedAt = Date.now(); debounceSave();
+            }
+        };
+        
+        window.deleteRelationship = function(idx) {
+            if(!confirm("¿Borrar esta relación?")) return;
+            const p = getActiveProject();
+            const c = p.characters.find(ch => ch.id === window.APP_STATE.activeCharacterId);
+            if(c && c.relationships) {
+                c.relationships.splice(idx, 1);
+                p.updatedAt = Date.now(); debounceSave();
+                window.renderCharactersSection();
+            }
+        };
+
         window.renderCharactersSection = function() {
             const p = getActiveProject();
             const listDiv = document.getElementById('characters-list-container');
@@ -1870,7 +1932,7 @@
 
             p.characters.forEach(c => {
                 const isActive = c.id === window.APP_STATE.activeCharacterId;
-                const activeClass = isActive ? 'border-2 border-[var(--primary)] bg-[var(--primary)] bg-opacity-10' : 'hover:border-[var(--primary)]';
+                const activeClass = isActive ? 'border-2 border-[var(--primary)] bg-primary-10' : 'hover:border-[var(--primary)]';
                 
                 const d = document.createElement('div');
                 d.className = `card p-4 rounded-2xl cursor-pointer transition-all flex justify-between items-center ${activeClass}`;
@@ -1880,13 +1942,57 @@
                         <h4 class="font-bold truncate">${escapeHtml(c.name)}</h4>
                         <span class="text-xs text-[var(--text-muted)] bg-[var(--bg-main)] px-2 py-0.5 rounded-full inline-block mt-1 border border-[var(--border-color)]">${escapeHtml(c.role)}</span>
                     </div>
-                    <button onclick="event.stopPropagation(); window.deleteCharacter('${c.id}')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg opacity-50 hover:opacity-100 ml-2"><i class="fas fa-trash-alt"></i></button>
+                    <button onclick="event.stopPropagation(); window.deleteCharacter('${c.id}')" class="text-red-500 hover:bg-red-500/10 p-2 rounded-lg opacity-50 hover:opacity-100 ml-2"><i class="fas fa-trash-alt"></i></button>
                 `;
                 listDiv.appendChild(d);
             });
 
             const char = p.characters.find(c => c.id === window.APP_STATE.activeCharacterId);
             if(!char) return;
+            
+            let relsHtml = `<div class="md:col-span-2 mt-6 pt-6 border-t border-[var(--border-color)]">
+                <div class="flex justify-between items-center mb-4">
+                    <label class="block text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-[var(--primary)]"><i class="fas fa-link"></i> Relaciones con otros personajes</label>
+                    <button onclick="window.addRelationship()" class="px-4 py-2 bg-[var(--primary)] text-white rounded-xl text-xs font-bold shadow-sm hover:opacity-80 transition-opacity flex items-center gap-2"><i class="fas fa-plus"></i> Añadir Relación</button>
+                </div>
+                <div class="space-y-4">`;
+
+            if (!char.relationships || char.relationships.length === 0) {
+                relsHtml += `<p class="text-sm text-[var(--text-muted)] italic bg-[var(--bg-main)] p-4 rounded-xl border border-[var(--border-color)]">Aún no has definido ninguna relación específica para este personaje.</p>`;
+            } else {
+                char.relationships.forEach((rel, idx) => {
+                    let options = `<option value="">-- Seleccionar Personaje --</option>`;
+                    p.characters.forEach(otherC => {
+                        if (otherC.id !== char.id) {
+                            let sel = (rel.withCharId === otherC.id) ? 'selected' : '';
+                            options += `<option value="${otherC.id}" ${sel}>${escapeHtml(otherC.name)}</option>`;
+                        }
+                    });
+                    
+                    relsHtml += `
+                    <div class="p-5 bg-[var(--bg-main)] border border-[var(--border-color)] rounded-xl relative shadow-sm">
+                        <button onclick="window.deleteRelationship(${idx})" class="absolute top-3 right-3 text-red-500 hover:text-red-700 p-2 opacity-70 hover:opacity-100 transition-opacity bg-[var(--bg-card)] rounded-lg shadow-sm border border-red-500/20"><i class="fas fa-trash-alt"></i></button>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 pr-8">
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-[var(--text-muted)] mb-1">¿Con quién?</label>
+                                <select onchange="window.updateRelationship(${idx}, 'withCharId', this.value)" class="w-full p-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-sm font-bold text-[var(--primary)] outline-none focus:border-[var(--primary)]">
+                                    ${options}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-[var(--text-muted)] mb-1">Nombre del Vínculo</label>
+                                <input type="text" value="${escapeHtml(rel.label || '')}" oninput="window.updateRelationship(${idx}, 'label', this.value)" class="w-full p-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-sm font-bold outline-none focus:border-[var(--primary)]" placeholder="Ej: Hermanas, Enemigo, Mentora...">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-[var(--text-muted)] mb-1">Detalles / Dinámica de la relación</label>
+                            <textarea oninput="window.updateRelationship(${idx}, 'details', this.value)" class="auto-expand w-full p-3 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-sm leading-relaxed outline-none focus:border-[var(--primary)]" placeholder="Cómo interactúan, tensiones, secretos en común...">${escapeHtml(rel.details || '')}</textarea>
+                        </div>
+                    </div>`;
+                });
+            }
+            relsHtml += `</div></div>`;
 
             editDiv.innerHTML = `
                 <div class="card rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
@@ -1923,11 +2029,13 @@
                             <label class="block text-xs font-bold uppercase tracking-wider mb-2"><i class="fas fa-check-circle text-[var(--primary)]"></i> Biografía e Historia</label>
                             <textarea oninput="window.updateChar('notes', this.value)" class="auto-expand w-full p-3 rounded-xl text-sm leading-relaxed font-serif">${escapeHtml(char.notes || '')}</textarea>
                         </div>
-                        
-                        <div class="md:col-span-2 mt-2">
-                            <label class="block text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fas fa-gamepad text-[var(--primary)]"></i> Respuestas al Minijuego</label>
-                            <textarea oninput="window.updateChar('minigameAnswers', this.value)" class="auto-expand w-full p-3 rounded-xl text-sm leading-relaxed font-serif bg-[var(--primary)] bg-opacity-5 border border-[var(--primary)] border-opacity-30 placeholder:italic" placeholder="Aquí aparecerán las respuestas del minijuego de conocer a tus personajes...">${escapeHtml(char.minigameAnswers || '')}</textarea>
-                        </div>
+                    </div>
+                    
+                    ${relsHtml}
+                    
+                    <div class="md:col-span-2 mt-4 pt-4 border-t border-[var(--border-color)]">
+                        <label class="block text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fas fa-gamepad text-[var(--primary)]"></i> Respuestas al Minijuego</label>
+                        <textarea oninput="window.updateChar('minigameAnswers', this.value)" class="auto-expand w-full p-3 rounded-xl text-sm leading-relaxed font-serif bg-primary-5 border border-primary-30 placeholder:italic" placeholder="Aquí aparecerán las respuestas del minijuego de conocer a tus personajes...">${escapeHtml(char.minigameAnswers || '')}</textarea>
                     </div>
                 </div>
             `;
@@ -1982,11 +2090,11 @@
                 const finalContent = contentHtml ? contentHtml : '<p class="text-sm text-[var(--text-muted)] italic text-center py-4">Aún no hay contenido en esta sección.</p>';
                 return `
                     <div class="border border-[var(--border-color)] rounded-2xl overflow-hidden bg-[var(--bg-card)] shadow-sm">
-                        <button onclick="toggleAccordion('${id}')" class="w-full p-4 text-left font-bold flex justify-between items-center hover:bg-[var(--primary)] hover:bg-opacity-5 transition-colors">
+                        <button onclick="toggleAccordion('${id}')" class="w-full p-4 text-left font-bold flex justify-between items-center hover:bg-[var(--bg-main)] transition-colors">
                             <span class="flex items-center gap-3 text-lg"><i class="fas ${icon} text-[var(--primary)] w-5 text-center"></i> ${title}</span>
                             <i class="fas fa-chevron-down transition-transform duration-300 text-[var(--text-muted)]" id="icon-${id}"></i>
                         </button>
-                        <div id="${id}" class="hidden p-5 border-t border-[var(--border-color)] bg-[var(--bg-main)] bg-opacity-30">
+                        <div id="${id}" class="hidden p-5 border-t border-[var(--border-color)] bg-main-30">
                             ${finalContent}
                         </div>
                     </div>
@@ -2006,18 +2114,45 @@
             let charsHtml = '';
             if(p.characters && p.characters.length > 0) {
                 p.characters.forEach(c => {
+                    
+                    let charContent = `<div class="pt-3 pb-2 space-y-3">
+                        ${c.desire ? `<p class="text-sm text-[var(--text-main)]"><strong class="font-bold text-[var(--primary)]">Deseo:</strong> ${escapeHtml(c.desire)}</p>` : ''}
+                        ${c.need ? `<p class="text-sm text-[var(--text-main)]"><strong class="font-bold text-[var(--primary)]">Necesidad:</strong> ${escapeHtml(c.need)}</p>` : ''}
+                        ${c.appearance ? `<p class="text-sm text-[var(--text-main)]"><strong class="font-bold text-[var(--primary)]">Apariencia:</strong> ${escapeHtml(c.appearance)}</p>` : ''}
+                        ${c.notes ? `<div class="text-sm text-[var(--text-main)] whitespace-pre-wrap font-serif bg-[var(--bg-card)] border border-[var(--border-color)] p-4 rounded-xl shadow-sm">${escapeHtml(c.notes)}</div>` : ''}
+                    `;
+                    
+                    if(c.relationships && c.relationships.length > 0) {
+                        let relText = `<div><strong class="text-[var(--primary)] flex items-center gap-2 text-xs uppercase tracking-wider mb-2 mt-4"><i class="fas fa-link"></i> Relaciones</strong><div class="space-y-2">`;
+                        c.relationships.forEach(rel => {
+                            const targetC = p.characters.find(x => x.id === rel.withCharId);
+                            const targetName = targetC ? escapeHtml(targetC.name) : 'Desconocido';
+                            relText += `<div class="bg-[var(--bg-main)] p-3 rounded-lg border border-[var(--border-color)] text-sm">
+                                <strong class="text-[var(--text-main)]">${targetName}</strong> <span class="text-[var(--primary)] font-bold text-xs uppercase bg-primary-10 px-2 py-0.5 rounded-full ml-1">${escapeHtml(rel.label || 'Vínculo no definido')}</span>
+                                ${rel.details ? `<p class="mt-1 font-serif text-[var(--text-muted)]">${escapeHtml(rel.details)}</p>` : ''}
+                            </div>`;
+                        });
+                        relText += `</div></div>`;
+                        charContent += relText;
+                    }
+                    
+                    charContent += `
+                        ${c.minigameAnswers ? `<div class="mt-4 text-sm text-[var(--text-main)] whitespace-pre-wrap font-serif bg-primary-10 border border-primary-30 p-4 rounded-xl shadow-sm"><strong class="text-[var(--primary)] block mb-1"><i class="fas fa-gamepad"></i> Respuestas al minijuego:</strong>${escapeHtml(c.minigameAnswers)}</div>` : ''}
+                        ${!c.desire && !c.need && !c.appearance && !c.notes && !c.minigameAnswers && (!c.relationships || c.relationships.length === 0) ? '<p class="text-xs text-[var(--text-muted)] italic mt-2">Ficha sin completar</p>' : ''}
+                    </div>`;
+
                     charsHtml += `
-                        <div class="mb-5 pb-5 border-b border-[var(--border-color)] last:border-0 last:mb-0 last:pb-0">
-                            <div class="flex justify-between items-start mb-3">
-                                <h4 class="font-bold text-lg text-[var(--primary)]">${escapeHtml(c.name)}</h4>
-                                <span class="text-[10px] uppercase tracking-widest px-2 py-1 rounded-full border border-[var(--primary)] text-[var(--primary)] font-bold">${escapeHtml(c.role)}</span>
+                        <div class="mb-3 last:mb-0 border border-[var(--border-color)] rounded-xl overflow-hidden bg-[var(--bg-card)] shadow-sm">
+                            <button onclick="toggleAccordion('ref-char-${c.id}')" class="w-full p-4 text-left flex justify-between items-center hover:bg-[var(--bg-main)] transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <h4 class="font-bold text-lg text-[var(--text-main)]">${escapeHtml(c.name)}</h4>
+                                    <span class="text-[10px] uppercase tracking-widest px-2 py-1 rounded-full border border-[var(--primary)] text-[var(--primary)] font-bold">${escapeHtml(c.role)}</span>
+                                </div>
+                                <i class="fas fa-chevron-down text-[var(--text-muted)] transition-transform duration-300" id="icon-ref-char-${c.id}"></i>
+                            </button>
+                            <div id="ref-char-${c.id}" class="hidden px-4 pb-4 bg-[var(--bg-main)] border-t border-[var(--border-color)]">
+                                ${charContent}
                             </div>
-                            ${c.desire ? `<p class="text-sm mb-2"><strong class="font-bold">Deseo:</strong> ${escapeHtml(c.desire)}</p>` : ''}
-                            ${c.need ? `<p class="text-sm mb-2"><strong class="font-bold">Necesidad:</strong> ${escapeHtml(c.need)}</p>` : ''}
-                            ${c.appearance ? `<p class="text-sm mb-2"><strong class="font-bold">Apariencia:</strong> ${escapeHtml(c.appearance)}</p>` : ''}
-                            ${c.notes ? `<div class="mt-3 text-sm text-[var(--text-main)] whitespace-pre-wrap font-serif bg-[var(--bg-card)] border border-[var(--border-color)] p-4 rounded-xl shadow-sm">${escapeHtml(c.notes)}</div>` : ''}
-                            ${c.minigameAnswers ? `<div class="mt-3 text-sm text-[var(--text-main)] whitespace-pre-wrap font-serif bg-[var(--primary)] bg-opacity-10 border border-[var(--primary)] border-opacity-30 p-4 rounded-xl shadow-sm"><strong class="text-[var(--primary)] block mb-1"><i class="fas fa-gamepad"></i> Respuestas al minijuego:</strong>${escapeHtml(c.minigameAnswers)}</div>` : ''}
-                            ${!c.desire && !c.need && !c.appearance && !c.notes && !c.minigameAnswers ? '<p class="text-xs text-[var(--text-muted)] italic">Ficha sin completar</p>' : ''}
                         </div>
                     `;
                 });
@@ -2032,7 +2167,6 @@
                     }
                 });
             }
-            // Inyectar Localizaciones en las Referencias del Mundo
             if (p.locations && p.locations.length > 0) {
                 worldHtml += `<div class="mt-6 pt-4 border-t border-[var(--border-color)]"><strong class="text-[var(--primary)] flex items-center gap-2 text-xs uppercase tracking-wider mb-4"><i class="fas fa-map-marked-alt"></i> Localizaciones</strong><div class="space-y-4">`;
                 p.locations.forEach(loc => {
@@ -2073,7 +2207,7 @@
                         <div class="border-l-4 border-[var(--primary)] pl-4 mb-5 pb-1 last:mb-0">
                             <div class="flex flex-col mb-2">
                                 <span class="text-[10px] uppercase tracking-wider text-[var(--primary)] font-bold mb-1">${escapeHtml(ev.era)} <span class="text-[var(--text-muted)] opacity-70">• ${timeStr}</span></span>
-                                <h4 class="font-bold text-lg">${escapeHtml(ev.title)}</h4>
+                                <h4 class="font-bold text-lg text-[var(--text-main)]">${escapeHtml(ev.title)}</h4>
                             </div>
                             ${ev.desc ? `<p class="text-sm text-[var(--text-main)] mt-2 whitespace-pre-wrap font-serif bg-[var(--bg-card)] border border-[var(--border-color)] p-4 rounded-xl shadow-sm">${escapeHtml(ev.desc)}</p>` : ''}
                         </div>
@@ -2082,13 +2216,33 @@
             }
             html += buildAccordion('ref-time', 'fa-stream', 'Cronología', timeHtml);
 
+            let capsHtml = '';
+            if(p.chapters && p.chapters.length > 0) {
+                p.chapters.forEach(chap => {
+                    if ((chap.summary && chap.summary.trim()) || (chap.cliffhanger && chap.cliffhanger.trim())) {
+                        capsHtml += `
+                            <div class="mb-5 pb-5 border-b border-[var(--border-color)] last:border-0 last:mb-0 last:pb-0">
+                                <h4 class="font-bold text-lg text-[var(--primary)] mb-3">${escapeHtml(chap.title)}</h4>
+                                ${chap.summary ? `<p class="text-sm font-serif mb-3 bg-[var(--bg-card)] p-3 rounded-lg border border-[var(--border-color)] shadow-sm text-[var(--text-main)]"><strong class="font-sans font-bold uppercase text-[10px] tracking-wider text-[var(--primary)] block mb-1">Resumen del capítulo:</strong> ${escapeHtml(chap.summary)}</p>` : ''}
+                                ${chap.cliffhanger ? `<p class="text-sm font-serif bg-primary-5 p-3 rounded-lg border border-primary-30 text-[var(--text-main)]"><strong class="font-sans font-bold uppercase text-[10px] tracking-wider text-[var(--primary)] block mb-1">Plot Twist / Cliffhanger:</strong> ${escapeHtml(chap.cliffhanger)}</p>` : ''}
+                            </div>
+                        `;
+                    }
+                });
+                if(capsHtml === '') {
+                    capsHtml = '<p class="text-sm text-[var(--text-muted)] italic text-center py-4">No has añadido resúmenes ni cliffhangers a tus capítulos.</p>';
+                }
+            } else {
+                capsHtml = '<p class="text-sm text-[var(--text-muted)] italic text-center py-4">Aún no has creado ningún capítulo.</p>';
+            }
+            html += buildAccordion('ref-caps', 'fa-book-open', 'Resúmenes de Capítulos', capsHtml);
+
             html += `</div>`;
             cont.innerHTML = html;
         };
 
         window.openTimeline = function() { navigate('timeline'); };
 
-        // Lógica de UI para Modo Lista y Zoom
         window.toggleTimelineMode = function(era) {
             if(!window.timelineUIState) window.timelineUIState = {};
             if(!window.timelineUIState[era]) window.timelineUIState[era] = { zoom: 1, mode: 'visual' };
@@ -2101,7 +2255,7 @@
             if(!window.timelineUIState[era]) window.timelineUIState[era] = { zoom: 1, mode: 'visual' };
             let z = window.timelineUIState[era].zoom + delta;
             if(z < 1) z = 1;
-            if(z > 20) z = 20; // Limite máximo de zoom x20
+            if(z > 20) z = 20; 
             window.timelineUIState[era].zoom = z;
             window.renderTimeline();
         };
@@ -2129,7 +2283,6 @@
                 const events = erasMap[era].sort((a,b) => a._tick - b._tick);
                 if(events.length === 0) return;
 
-                // Cargar estado de interfaz para esta Era
                 if (!window.timelineUIState[era]) window.timelineUIState[era] = { zoom: 1, mode: 'visual' };
                 const uiState = window.timelineUIState[era];
 
@@ -2140,7 +2293,6 @@
                 const eraDiv = document.createElement('div');
                 eraDiv.className = 'bg-[var(--bg-card)] p-6 sm:p-8 rounded-3xl border border-[var(--border-color)] shadow-sm';
                 
-                // Controles de cabecera (Zoom y Modo Vista)
                 let headerHtml = `
                     <div class="flex flex-wrap justify-between items-center mb-6 gap-4 border-b border-[var(--border-color)] pb-4">
                         <div>
@@ -2165,7 +2317,6 @@
                 let contentHtml = '';
 
                 if (uiState.mode === 'list') {
-                    // MODO LISTA VERTICAL
                     contentHtml = '<div class="space-y-3 mt-4">';
                     events.forEach(ev => {
                         const timeArr = [];
@@ -2178,14 +2329,13 @@
                         contentHtml += `
                             <div class="border-l-4 border-[var(--primary)] pl-4 py-3 cursor-pointer hover:bg-[var(--bg-main)] rounded-r-xl transition-colors border border-transparent hover:border-[var(--border-color)]" onclick="editTimelineEvent('${b64Data}')">
                                 <div class="text-[10px] uppercase tracking-wider text-[var(--primary)] font-bold mb-1">${timeStr}</div>
-                                <h4 class="font-bold text-lg">${escapeHtml(ev.title)}</h4>
+                                <h4 class="font-bold text-lg text-[var(--text-main)]">${escapeHtml(ev.title)}</h4>
                                 ${ev.desc ? `<p class="text-sm text-[var(--text-muted)] mt-1 line-clamp-2">${escapeHtml(ev.desc)}</p>` : ''}
                             </div>
                         `;
                     });
                     contentHtml += '</div>';
                 } else {
-                    // MODO VISUAL HORIZONTAL (CON ZOOM Y PADDING DE SEGURIDAD)
                     let nodesHtml = '';
                     events.forEach(ev => {
                         let percent = 50; 
@@ -2210,7 +2360,6 @@
                         `;
                     });
 
-                    // El padding de 120px evita que los textos absolutos de las puntas se corten al hacer scroll
                     contentHtml = `
                         <div class="overflow-x-auto w-full custom-scrollbar pb-8 pt-4">
                             <div style="padding: 0 120px; min-width: ${uiState.zoom * 100}%;">
