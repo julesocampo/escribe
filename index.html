@@ -239,6 +239,9 @@
                     <button onclick="openDriveModal(); document.getElementById('main-menu-dropdown').classList.add('hidden')" class="w-full text-left px-4 py-3 hover:bg-[var(--bg-main)] transition-colors flex items-center gap-3 font-semibold text-sm border-t border-[var(--border-color)]">
                         <i class="fab fa-google-drive text-[#1fa463] w-5 text-center text-lg"></i> Google Drive Sync
                     </button>
+                    <button onclick="document.getElementById('import-file').click(); document.getElementById('main-menu-dropdown').classList.add('hidden')" class="w-full text-left px-4 py-3 hover:bg-[var(--bg-main)] transition-colors flex items-center gap-3 font-semibold text-sm border-t border-[var(--border-color)]">
+                        <i class="fas fa-file-import text-[var(--primary)] w-5 text-center text-lg"></i> Importar Proyecto
+                    </button>
                     <button onclick="openExportModal(); document.getElementById('main-menu-dropdown').classList.add('hidden')" class="w-full text-left px-4 py-3 hover:bg-[var(--bg-main)] transition-colors flex items-center gap-3 font-semibold text-sm border-t border-[var(--border-color)]">
                         <i class="fas fa-file-export text-[var(--text-muted)] w-5 text-center text-lg"></i> Exportar Proyecto
                     </button>
@@ -250,6 +253,7 @@
 
         </div>
     </nav>
+    <input type="file" id="import-file" class="hidden" accept=".txt" onchange="importProject(event)">
 
     <div id="toast-container"></div>
 
@@ -1296,6 +1300,12 @@
                     });
                 } else { txt += `(No hay eventos creados)\n\n`; }
             }
+            
+            // --- NUEVO: AÑADIR DATOS ESTRUCTURADOS PARA IMPORTACIÓN ---
+            txt += `\n\n[=== ESCRIBE_APP_DATA_BEGIN ===]\n`;
+            txt += JSON.stringify(p);
+            txt += `\n[=== ESCRIBE_APP_DATA_END ===]\n`;
+            // ----------------------------------------------------------
 
             const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
@@ -1310,6 +1320,43 @@
             
             closeModal('export');
             showToast("Proyecto exportado correctamente", "success");
+        };
+
+        // --- NUEVA FUNCIÓN PARA IMPORTAR PROYECTO ---
+        window.importProject = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                const match = content.match(/\[=== ESCRIBE_APP_DATA_BEGIN ===\]\n([\s\S]*?)\n\[=== ESCRIBE_APP_DATA_END ===\]/);
+                
+                let projectData = null;
+                if (match && match[1]) {
+                    try {
+                        projectData = JSON.parse(match[1]);
+                    } catch(err) {
+                        console.error("Error al leer los datos estructurados:", err);
+                    }
+                }
+
+                if (projectData && projectData.title) {
+                    projectData.id = 'proj_' + Date.now();
+                    projectData.updatedAt = Date.now();
+                    
+                    window.APP_STATE.projects.unshift(projectData);
+                    window.APP_STATE.activeProjectId = projectData.id;
+                    saveData();
+                    
+                    window.showToast("Proyecto importado con éxito", "success");
+                    window.navigate('project');
+                } else {
+                    window.showToast("El archivo .txt no es válido o no contiene datos de Escribe.", "error");
+                }
+                event.target.value = '';
+            };
+            reader.readAsText(file);
         };
 
         window.changeTheme = function(theme) { window.APP_STATE.settings.theme = theme; applySettings(); saveData(); };
