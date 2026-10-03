@@ -110,15 +110,15 @@
         }
 
         textarea.auto-expand { 
-            overflow-y: hidden; 
             resize: none; 
             min-height: 120px; 
             box-sizing: border-box; 
             width: 100%;
         }
 
+        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-main); }
+        ::-webkit-scrollbar-track { background: var(--bg-main); border-radius: 4px; }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
@@ -135,7 +135,7 @@
         .hidden { display: none !important; }
 
         .timeline-track-container {
-            position: relative; height: 120px; width: 100%; margin-top: 2rem; margin-bottom: 2rem;
+            position: relative; height: 120px; width: 100%;
         }
         .timeline-thick-bar {
             position: absolute; top: 50%; left: 0; right: 0; height: 16px;
@@ -217,12 +217,14 @@
     <div class="kawaii-element" style="top: 30%; left: 80%; animation-delay: 4s;">🦋</div>
     <div class="kawaii-element" style="top: 70%; left: 70%; animation-delay: 1s;">🍡</div>
 
-    <nav class="sticky top-0 z-40 backdrop-blur-md bg-[var(--bg-card)] bg-opacity-90 border-b border-[var(--border-color)] shadow-sm p-4 flex justify-between items-center">
-        <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('home')">
-            <i class="fas fa-feather-alt text-2xl text-[var(--primary)]"></i>
-            <h1 class="text-xl font-bold tracking-tight">¡Escribe!</h1>
+    <nav class="sticky top-0 z-40 backdrop-blur-md bg-[var(--bg-card)] bg-opacity-90 border-b border-[var(--border-color)] shadow-sm p-3 sm:p-4 flex justify-between items-center">
+        <div class="flex items-center gap-2 sm:gap-3 cursor-pointer" onclick="navigate('home')">
+            <i class="fas fa-feather-alt text-2xl sm:text-3xl text-[var(--primary)] shrink-0"></i>
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight shrink-0">¡Escribe!</h1>
+            <div class="h-6 sm:h-8 border-l border-[var(--border-color)] shrink-0 ml-1"></div>
+            <span class="text-[9px] sm:text-[11px] font-sans text-[var(--text-muted)] font-medium leading-[1.1] sm:leading-tight max-w-[120px] sm:max-w-[250px] opacity-90 pl-1">La herramienta definitiva para vencer el temor a la página en blanco.</span>
         </div>
-        <div class="flex items-center gap-2 sm:gap-4">
+        <div class="flex items-center gap-2 sm:gap-4 shrink-0">
             <span id="save-indicator" class="hidden sm:inline-flex text-xs font-semibold text-[var(--primary)] opacity-0 transition-opacity items-center gap-1"><i class="fas fa-check-circle"></i> Guardado</span>
             
             <!-- Menú Desplegable -->
@@ -235,7 +237,7 @@
                     <button onclick="startGuidedTour()" class="w-full text-left px-4 py-3 hover:bg-[var(--bg-main)] transition-colors flex items-center gap-3 font-semibold text-sm">
                         <i class="fas fa-route text-[var(--primary)] w-5 text-center text-lg"></i> Recorrido Guiado
                     </button>
-                    <!-- Nueva Función: Google Drive -->
+                    <!-- Funciones Cloud y Exportación -->
                     <button onclick="openDriveModal(); document.getElementById('main-menu-dropdown').classList.add('hidden')" class="w-full text-left px-4 py-3 hover:bg-[var(--bg-main)] transition-colors flex items-center gap-3 font-semibold text-sm border-t border-[var(--border-color)]">
                         <i class="fab fa-google-drive text-[#1fa463] w-5 text-center text-lg"></i> Google Drive Sync
                     </button>
@@ -253,6 +255,7 @@
 
         </div>
     </nav>
+    <!-- Input oculto para importación de archivos TXT -->
     <input type="file" id="import-file" class="hidden" accept=".txt" onchange="importProject(event)">
 
     <div id="toast-container"></div>
@@ -263,7 +266,7 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
                 <div>
                     <h2 class="text-3xl font-bold">Mis Proyectos</h2>
-                    <p class="text-sm text-[var(--text-muted)] mt-1 font-medium">La herramienta definitiva para superar el temor a la hoja en blanco</p>
+                    <p class="text-sm text-[var(--text-muted)] mt-1 font-medium">Aquí encontrarás todas las historias que tienes en el horno. ¡Sigue escribiendo!</p>
                 </div>
                 <button id="tour-target-newproj" onclick="createNewProject()" class="btn-primary px-6 py-3 rounded-xl font-semibold flex items-center gap-2 shadow-lg w-full sm:w-auto justify-center">
                     <i class="fas fa-plus"></i> Nuevo Proyecto
@@ -291,56 +294,70 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div onclick="openSection('core')" id="tour-target-core" class="card card-hover p-6 rounded-3xl cursor-pointer flex flex-col justify-between h-52 group">
-                    <div class="flex items-start justify-between">
-                        <div class="w-14 h-14 rounded-2xl bg-[var(--primary)] bg-opacity-10 text-[var(--primary)] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="fas fa-seedling"></i></div>
-                        <span class="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">01</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-xl">El Núcleo</h3>
-                        <p class="text-sm text-[var(--text-muted)] mt-1 line-clamp-2">Premisa, Tema, Final proyectado y Stakes.</p>
-                    </div>
-                </div>
-
-                <div onclick="openCharactersSection()" class="card card-hover p-6 rounded-3xl cursor-pointer flex flex-col justify-between h-52 group border-l-4 border-l-[var(--primary)]">
-                    <div class="flex items-start justify-between">
-                        <div class="w-14 h-14 rounded-2xl bg-[var(--primary)] bg-opacity-10 text-[var(--primary)] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="fas fa-users"></i></div>
-                        <span class="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">02</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-xl">Personajes</h3>
-                        <p class="text-sm text-[var(--text-muted)] mt-1 line-clamp-2">Fichas múltiples: Deseo, Necesidad, Notas.</p>
-                    </div>
-                </div>
-
-                <div onclick="openSection('world')" class="card card-hover p-6 rounded-3xl cursor-pointer flex flex-col justify-between h-52 group">
-                    <div class="flex items-start justify-between">
-                        <div class="w-14 h-14 rounded-2xl bg-[var(--primary)] bg-opacity-10 text-[var(--primary)] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="fas fa-globe-europe"></i></div>
-                        <span class="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">03</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-xl">El Mundo y Voz</h3>
-                        <p class="text-sm text-[var(--text-muted)] mt-1 line-clamp-2">Worldbuilding, POV, Tono y Atmósfera.</p>
-                    </div>
-                </div>
-
-                <div onclick="openSection('structure')" class="card card-hover p-6 rounded-3xl cursor-pointer flex flex-col justify-between h-52 group">
-                    <div class="flex items-start justify-between">
-                        <div class="w-14 h-14 rounded-2xl bg-[var(--primary)] bg-opacity-10 text-[var(--primary)] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="fas fa-project-diagram"></i></div>
-                        <span class="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">04</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-xl">Estructura</h3>
-                        <p class="text-sm text-[var(--text-muted)] mt-1 line-clamp-2">Incidente Incitador, Punto Medio, Clímax.</p>
-                    </div>
-                </div>
-
-                <div onclick="openTimeline()" class="card card-hover p-6 rounded-3xl cursor-pointer flex flex-col justify-between h-52 group border-dashed border-2 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-[var(--bg-main)] to-[var(--bg-card)] opacity-50 z-0"></div>
+                <!-- Secciones de Proyecto Unificadas con la estética de "Escribe" -->
+                
+                <div onclick="openSection('core')" id="tour-target-core" class="card card-hover p-6 rounded-3xl cursor-pointer flex flex-col justify-between h-52 group bg-gradient-to-br from-[var(--bg-card)] to-[var(--bg-main)] border-2 border-[var(--primary)] shadow-md hover:shadow-lg relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 opacity-10 text-9xl text-[var(--primary)]"><i class="fas fa-seedling"></i></div>
                     <div class="relative z-10 flex flex-col justify-between h-full">
                         <div class="flex items-start justify-between">
-                            <div class="w-14 h-14 rounded-2xl bg-[var(--primary)] bg-opacity-20 text-[var(--primary)] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="fas fa-stream"></i></div>
-                            <span class="text-xs font-bold text-[var(--primary)] uppercase tracking-wider bg-[var(--primary)] bg-opacity-10 px-3 py-1 rounded-full">Cronología</span>
+                            <div class="w-14 h-14 rounded-2xl bg-[var(--primary)] text-white flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-lg"><i class="fas fa-seedling"></i></div>
+                            <span class="text-xs font-bold text-white uppercase tracking-wider bg-[var(--primary)] px-3 py-1 rounded-full shadow">Base</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl">El Núcleo</h3>
+                            <p class="text-sm text-[var(--text-muted)] mt-1 line-clamp-2">Premisa, Tema, Final proyectado y Stakes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div onclick="openCharactersSection()" class="card card-hover p-6 rounded-3xl cursor-pointer flex flex-col justify-between h-52 group bg-gradient-to-br from-[var(--bg-card)] to-[var(--bg-main)] border-2 border-[var(--primary)] shadow-md hover:shadow-lg relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 opacity-10 text-9xl text-[var(--primary)]"><i class="fas fa-users"></i></div>
+                    <div class="relative z-10 flex flex-col justify-between h-full">
+                        <div class="flex items-start justify-between">
+                            <div class="w-14 h-14 rounded-2xl bg-[var(--primary)] text-white flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-lg"><i class="fas fa-users"></i></div>
+                            <span class="text-xs font-bold text-white uppercase tracking-wider bg-[var(--primary)] px-3 py-1 rounded-full shadow">Elenco</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl">Personajes</h3>
+                            <p class="text-sm text-[var(--text-muted)] mt-1 line-clamp-2">Fichas múltiples: Deseo, Necesidad, Notas.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div onclick="openSection('world')" class="card card-hover p-6 rounded-3xl cursor-pointer flex flex-col justify-between h-52 group bg-gradient-to-br from-[var(--bg-card)] to-[var(--bg-main)] border-2 border-[var(--primary)] shadow-md hover:shadow-lg relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 opacity-10 text-9xl text-[var(--primary)]"><i class="fas fa-globe-europe"></i></div>
+                    <div class="relative z-10 flex flex-col justify-between h-full">
+                        <div class="flex items-start justify-between">
+                            <div class="w-14 h-14 rounded-2xl bg-[var(--primary)] text-white flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-lg"><i class="fas fa-globe-europe"></i></div>
+                            <span class="text-xs font-bold text-white uppercase tracking-wider bg-[var(--primary)] px-3 py-1 rounded-full shadow">Universo</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl">El Mundo y Voz</h3>
+                            <p class="text-sm text-[var(--text-muted)] mt-1 line-clamp-2">Worldbuilding, POV, Tono y Atmósfera.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div onclick="openSection('structure')" class="card card-hover p-6 rounded-3xl cursor-pointer flex flex-col justify-between h-52 group bg-gradient-to-br from-[var(--bg-card)] to-[var(--bg-main)] border-2 border-[var(--primary)] shadow-md hover:shadow-lg relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 opacity-10 text-9xl text-[var(--primary)]"><i class="fas fa-project-diagram"></i></div>
+                    <div class="relative z-10 flex flex-col justify-between h-full">
+                        <div class="flex items-start justify-between">
+                            <div class="w-14 h-14 rounded-2xl bg-[var(--primary)] text-white flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-lg"><i class="fas fa-project-diagram"></i></div>
+                            <span class="text-xs font-bold text-white uppercase tracking-wider bg-[var(--primary)] px-3 py-1 rounded-full shadow">Trama</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl">Estructura</h3>
+                            <p class="text-sm text-[var(--text-muted)] mt-1 line-clamp-2">Incidente Incitador, Punto Medio, Clímax.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div onclick="openTimeline()" class="card card-hover p-6 rounded-3xl cursor-pointer flex flex-col justify-between h-52 group bg-gradient-to-br from-[var(--bg-card)] to-[var(--bg-main)] border-2 border-[var(--primary)] shadow-md hover:shadow-lg relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 opacity-10 text-9xl text-[var(--primary)]"><i class="fas fa-stream"></i></div>
+                    <div class="relative z-10 flex flex-col justify-between h-full">
+                        <div class="flex items-start justify-between">
+                            <div class="w-14 h-14 rounded-2xl bg-[var(--primary)] text-white flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-lg"><i class="fas fa-stream"></i></div>
+                            <span class="text-xs font-bold text-white uppercase tracking-wider bg-[var(--primary)] px-3 py-1 rounded-full shadow">Tiempo</span>
                         </div>
                         <div>
                             <h3 class="font-bold text-xl">Línea Temporal</h3>
@@ -362,6 +379,7 @@
                         </div>
                     </div>
                 </div>
+                
             </div>
         </section>
 
@@ -393,7 +411,7 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start min-h-[calc(100vh-220px)]">
-                <div class="lg:col-span-3 flex flex-col gap-3 max-h-[75vh] overflow-y-auto pr-2 sticky top-24" id="chapters-list-container"></div>
+                <div class="lg:col-span-3 flex flex-col gap-3 max-h-[40vh] lg:max-h-[75vh] overflow-y-auto pr-2 lg:sticky lg:top-24 custom-scrollbar" id="chapters-list-container"></div>
                 <div class="lg:col-span-9 w-full" id="chapter-editor-container"></div>
             </div>
         </section>
@@ -416,7 +434,7 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                <div class="lg:col-span-4 flex flex-col gap-3 max-h-[75vh] overflow-y-auto pr-2" id="characters-list-container"></div>
+                <div class="lg:col-span-4 flex flex-col gap-3 max-h-[40vh] lg:max-h-[75vh] overflow-y-auto pr-2 lg:sticky lg:top-24 custom-scrollbar" id="characters-list-container"></div>
                 <div class="lg:col-span-8" id="character-editor-container"></div>
             </div>
         </section>
@@ -585,7 +603,7 @@
                 </div>
                 <button onclick="closeModal('references')" class="text-[var(--text-muted)] hover:text-red-500 text-3xl px-2 transition-colors">&times;</button>
             </div>
-            <div class="flex-1 overflow-y-auto pr-2" id="references-content"></div>
+            <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar" id="references-content"></div>
         </div>
     </div>
 
@@ -681,7 +699,7 @@
         </div>
     </div>
 
-    <!-- Overlay y Popover de Recorrido Guiado Interactivo (MEJORADO) -->
+    <!-- Overlay y Popover de Recorrido Guiado Interactivo -->
     <div id="tour-overlay" class="fixed inset-0 z-[10000] bg-black/10 hidden transition-opacity duration-300 pointer-events-auto" onclick="endGuidedTour()"></div>
 
     <div id="tour-popover" class="fixed z-[10002] card p-4 rounded-2xl shadow-2xl w-[260px] sm:w-[280px] hidden transition-all duration-200 border-2 border-[var(--primary)] text-left">
@@ -713,6 +731,9 @@
             currentView: 'home',
             settings: { theme: 'light', font: 'sans' }
         };
+
+        // GESTIÓN DEL ESTADO VISUAL DE LA CRONOLOGÍA (Para el Zoom y el Modo Lista)
+        window.timelineUIState = {};
 
         const SECTIONS_META = {
             core: "El Núcleo", world: "El Mundo y la Voz", structure: "La Estructura"
@@ -785,7 +806,6 @@
         window.gisLoaded = function() {
             tokenClient = google.accounts.oauth2.initTokenClient({
                 client_id: DRIVE_CLIENT_ID,
-                // Usamos drive.file por seguridad: solo accede a los archivos creados por esta app.
                 scope: 'https://www.googleapis.com/auth/drive.file',
                 callback: (resp) => {
                     if (resp.error) {
@@ -892,7 +912,7 @@
                     const data = await res.text();
                     
                     try {
-                        JSON.parse(data); // Validación de seguridad antes de guardar
+                        JSON.parse(data); 
                     } catch(jsonErr) {
                         window.showToast("El archivo descargado está corrupto.", "error");
                         return;
@@ -1301,11 +1321,10 @@
                 } else { txt += `(No hay eventos creados)\n\n`; }
             }
             
-            // --- NUEVO: AÑADIR DATOS ESTRUCTURADOS PARA IMPORTACIÓN ---
+            // Datos estructurados para importación
             txt += `\n\n[=== ESCRIBE_APP_DATA_BEGIN ===]\n`;
             txt += JSON.stringify(p);
             txt += `\n[=== ESCRIBE_APP_DATA_END ===]\n`;
-            // ----------------------------------------------------------
 
             const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
@@ -1322,7 +1341,6 @@
             showToast("Proyecto exportado correctamente", "success");
         };
 
-        // --- NUEVA FUNCIÓN PARA IMPORTAR PROYECTO ---
         window.importProject = function(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1366,6 +1384,7 @@
             document.documentElement.setAttribute('data-font', window.APP_STATE.settings.font || 'sans');
         }
 
+        /* --- NUEVO SISTEMA DE AUTO-EXPANSIÓN PARA TEXTAREAS --- */
         function setupAutoExpand() {
             document.addEventListener('input', function(e) {
                 if (e.target.tagName.toLowerCase() === 'textarea' && e.target.classList.contains('auto-expand')) {
@@ -1373,10 +1392,25 @@
                 }
             });
         }
+        
         function autoExpandNode(node) { 
+            // Límite de seguridad: 3000px es aprox 5-6 páginas estándar de un solo tirón
+            const MAX_HEIGHT = 3000;
+            
+            // Se resetea la altura momentáneamente para poder recalcular correctamente si se ha borrado texto
             node.style.height = 'auto'; 
-            node.style.height = (node.scrollHeight) + 'px'; 
+            
+            let newScrollHeight = node.scrollHeight;
+            
+            if (newScrollHeight > MAX_HEIGHT) {
+                node.style.height = MAX_HEIGHT + 'px';
+                node.style.overflowY = 'auto';
+            } else {
+                node.style.height = newScrollHeight + 'px';
+                node.style.overflowY = 'hidden';
+            }
         }
+
         window.triggerAutoExpands = function() {
             setTimeout(() => { document.querySelectorAll('textarea.auto-expand').forEach(el => autoExpandNode(el)); }, 50);
         };
@@ -1545,23 +1579,26 @@
 
             const wordCount = chap.content ? chap.content.trim().split(/\s+/).filter(w => w.length > 0).length : 0;
 
+            // Se han eliminado las clases "flex-1" y "overflow-hidden" del textarea para permitir la expansión vertical sin restricciones del flex padre
             editDiv.innerHTML = `
                 <div class="card rounded-3xl p-6 sm:p-10 shadow-sm flex flex-col border-t-8 border-t-[var(--primary)] min-h-full">
-                    <div class="flex justify-between items-center mb-6 border-b border-[var(--border-color)] pb-4 gap-4">
-                        <input type="text" value="${escapeHtml(chap.title)}" oninput="window.updateChapter('title', this.value)" class="clean-input w-full text-[var(--text-main)] text-2xl sm:text-3xl font-bold font-serif" placeholder="Nombre del Capítulo">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-[var(--border-color)] pb-4 gap-4">
+                        <textarea id="chapter-title-textarea" rows="1" oninput="window.updateChapter('title', this.value); this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px';" class="clean-input w-full text-[var(--text-main)] text-2xl sm:text-3xl font-bold font-serif resize-none overflow-hidden" style="min-height: 40px; height: auto;" placeholder="Nombre del Capítulo">${escapeHtml(chap.title)}</textarea>
                         
-                        <span id="word-counter" class="text-xs sm:text-sm font-bold text-[var(--primary)] bg-[var(--bg-main)] px-3 py-1.5 rounded-xl whitespace-nowrap border border-[var(--border-color)] shadow-sm transition-colors flex items-center gap-2">
+                        <span id="word-counter" class="shrink-0 text-xs sm:text-sm font-bold text-[var(--primary)] bg-[var(--bg-main)] px-3 py-1.5 rounded-xl whitespace-nowrap border border-[var(--border-color)] shadow-sm transition-colors flex items-center gap-2 self-start sm:self-auto">
                             <i class="fas fa-pen-nib"></i> <span>${wordCount} ${wordCount === 1 ? 'palabra' : 'palabras'}</span>
                         </span>
                     </div>
                     
-                    <textarea id="main-editor-textarea" oninput="window.updateChapterContent(this)" class="auto-expand w-full flex-1 p-2 rounded-xl text-lg leading-loose font-serif bg-transparent text-[var(--text-main)] resize-none focus:outline-none placeholder:italic placeholder:text-[var(--text-muted)] overflow-hidden" placeholder="Érase una vez...">${escapeHtml(chap.content || '')}</textarea>
+                    <textarea id="main-editor-textarea" oninput="window.updateChapterContent(this)" class="auto-expand w-full p-2 rounded-xl text-lg leading-loose font-serif bg-transparent text-[var(--text-main)] focus:outline-none placeholder:italic placeholder:text-[var(--text-muted)]" placeholder="Érase una vez...">${escapeHtml(chap.content || '')}</textarea>
                 </div>
             `;
             
             setTimeout(() => {
                 const ta = document.getElementById('main-editor-textarea');
                 if(ta) autoExpandNode(ta);
+                const titleTa = document.getElementById('chapter-title-textarea');
+                if(titleTa) { titleTa.style.height = 'auto'; titleTa.style.height = titleTa.scrollHeight + 'px'; }
             }, 10);
         };
 
@@ -1830,6 +1867,24 @@
 
         window.openTimeline = function() { navigate('timeline'); };
 
+        // Lógica de UI para Modo Lista y Zoom
+        window.toggleTimelineMode = function(era) {
+            if(!window.timelineUIState) window.timelineUIState = {};
+            if(!window.timelineUIState[era]) window.timelineUIState[era] = { zoom: 1, mode: 'visual' };
+            window.timelineUIState[era].mode = window.timelineUIState[era].mode === 'visual' ? 'list' : 'visual';
+            window.renderTimeline();
+        };
+
+        window.changeTimelineZoom = function(era, delta) {
+            if(!window.timelineUIState) window.timelineUIState = {};
+            if(!window.timelineUIState[era]) window.timelineUIState[era] = { zoom: 1, mode: 'visual' };
+            let z = window.timelineUIState[era].zoom + delta;
+            if(z < 1) z = 1;
+            if(z > 20) z = 20; // Limite máximo de zoom x20
+            window.timelineUIState[era].zoom = z;
+            window.renderTimeline();
+        };
+
         window.renderTimeline = function() {
             const p = getActiveProject();
             const cont = document.getElementById('timeline-eras-container');
@@ -1853,6 +1908,10 @@
                 const events = erasMap[era].sort((a,b) => a._tick - b._tick);
                 if(events.length === 0) return;
 
+                // Cargar estado de interfaz para esta Era
+                if (!window.timelineUIState[era]) window.timelineUIState[era] = { zoom: 1, mode: 'visual' };
+                const uiState = window.timelineUIState[era];
+
                 let minTick = events[0]._tick;
                 let maxTick = events[events.length - 1]._tick;
                 let range = maxTick - minTick;
@@ -1860,38 +1919,90 @@
                 const eraDiv = document.createElement('div');
                 eraDiv.className = 'bg-[var(--bg-card)] p-6 sm:p-8 rounded-3xl border border-[var(--border-color)] shadow-sm';
                 
-                let nodesHtml = '';
-                events.forEach((ev, i) => {
-                    let percent = 50; 
-                    if(range > 0) percent = ((ev._tick - minTick) / range) * 100;
-                    percent = Math.max(3, Math.min(97, percent)); 
+                // Controles de cabecera (Zoom y Modo Vista)
+                let headerHtml = `
+                    <div class="flex flex-wrap justify-between items-center mb-6 gap-4 border-b border-[var(--border-color)] pb-4">
+                        <div>
+                            <h3 class="font-bold text-2xl flex items-center gap-3"><i class="fas fa-hourglass-half text-[var(--primary)]"></i> ${escapeHtml(era)}</h3>
+                            <p class="text-xs text-[var(--text-muted)] uppercase tracking-wider mt-1">${events.length} Evento(s)</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            ${uiState.mode === 'visual' ? `
+                                <div class="flex items-center bg-[var(--bg-main)] rounded-lg border border-[var(--border-color)] overflow-hidden shadow-sm mr-2">
+                                    <button onclick="changeTimelineZoom('${escapeHtml(era)}', -1)" class="px-3 py-1.5 hover:bg-[var(--primary)] hover:text-white transition-colors text-[var(--text-muted)]" title="Alejar Zoom"><i class="fas fa-search-minus"></i></button>
+                                    <span class="px-3 py-1.5 text-xs font-bold border-x border-[var(--border-color)] bg-[var(--bg-card)]">${uiState.zoom}x</span>
+                                    <button onclick="changeTimelineZoom('${escapeHtml(era)}', 1)" class="px-3 py-1.5 hover:bg-[var(--primary)] hover:text-white transition-colors text-[var(--text-muted)]" title="Acercar Zoom"><i class="fas fa-search-plus"></i></button>
+                                </div>
+                            ` : ''}
+                            <button onclick="toggleTimelineMode('${escapeHtml(era)}')" class="p-2 px-3 rounded-lg border border-[var(--border-color)] bg-[var(--bg-main)] hover:bg-[var(--primary)] hover:text-white transition-colors shadow-sm text-sm font-bold flex items-center gap-2">
+                                ${uiState.mode === 'visual' ? '<i class="fas fa-list"></i> Ver Lista' : '<i class="fas fa-project-diagram"></i> Ver Gráfico'}
+                            </button>
+                        </div>
+                    </div>
+                `;
 
-                    const timeArr = [];
-                    if(ev.year !== "" && ev.year !== null) timeArr.push(`A${ev.year}`);
-                    if(ev.month !== "" && ev.month !== null) timeArr.push(`M${ev.month}`);
-                    if(ev.day !== "" && ev.day !== null) timeArr.push(`D${ev.day}`);
-                    const timeStr = timeArr.length > 0 ? timeArr.join("-") : "Inicio";
+                let contentHtml = '';
 
-                    const b64Data = btoa(unescape(encodeURIComponent(JSON.stringify(ev))));
-                    
-                    nodesHtml += `
-                        <div class="timeline-node" style="left: ${percent}%;" onclick="editTimelineEvent('${b64Data}')" title="Clic para editar">
-                            <div class="timeline-node-label">
-                                <div class="font-bold text-[var(--primary)]">${escapeHtml(ev.title)}</div>
-                                <div class="text-[0.65rem] font-medium text-[var(--text-muted)]">${timeStr}</div>
+                if (uiState.mode === 'list') {
+                    // MODO LISTA VERTICAL
+                    contentHtml = '<div class="space-y-3 mt-4">';
+                    events.forEach(ev => {
+                        const timeArr = [];
+                        if(ev.year !== "" && ev.year !== null) timeArr.push(`A${ev.year}`);
+                        if(ev.month !== "" && ev.month !== null) timeArr.push(`M${ev.month}`);
+                        if(ev.day !== "" && ev.day !== null) timeArr.push(`D${ev.day}`);
+                        const timeStr = timeArr.length > 0 ? timeArr.join("-") : "Inicio";
+                        const b64Data = btoa(unescape(encodeURIComponent(JSON.stringify(ev))));
+
+                        contentHtml += `
+                            <div class="border-l-4 border-[var(--primary)] pl-4 py-3 cursor-pointer hover:bg-[var(--bg-main)] rounded-r-xl transition-colors border border-transparent hover:border-[var(--border-color)]" onclick="editTimelineEvent('${b64Data}')">
+                                <div class="text-[10px] uppercase tracking-wider text-[var(--primary)] font-bold mb-1">${timeStr}</div>
+                                <h4 class="font-bold text-lg">${escapeHtml(ev.title)}</h4>
+                                ${ev.desc ? `<p class="text-sm text-[var(--text-muted)] mt-1 line-clamp-2">${escapeHtml(ev.desc)}</p>` : ''}
+                            </div>
+                        `;
+                    });
+                    contentHtml += '</div>';
+                } else {
+                    // MODO VISUAL HORIZONTAL (CON ZOOM Y PADDING DE SEGURIDAD)
+                    let nodesHtml = '';
+                    events.forEach(ev => {
+                        let percent = 50; 
+                        if(range > 0) percent = ((ev._tick - minTick) / range) * 100;
+                        percent = Math.max(0, Math.min(100, percent)); 
+
+                        const timeArr = [];
+                        if(ev.year !== "" && ev.year !== null) timeArr.push(`A${ev.year}`);
+                        if(ev.month !== "" && ev.month !== null) timeArr.push(`M${ev.month}`);
+                        if(ev.day !== "" && ev.day !== null) timeArr.push(`D${ev.day}`);
+                        const timeStr = timeArr.length > 0 ? timeArr.join("-") : "Inicio";
+
+                        const b64Data = btoa(unescape(encodeURIComponent(JSON.stringify(ev))));
+                        
+                        nodesHtml += `
+                            <div class="timeline-node" style="left: ${percent}%;" onclick="editTimelineEvent('${b64Data}')" title="Clic para editar">
+                                <div class="timeline-node-label">
+                                    <div class="font-bold text-[var(--primary)]">${escapeHtml(ev.title)}</div>
+                                    <div class="text-[0.65rem] font-medium text-[var(--text-muted)]">${timeStr}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    // El padding de 120px evita que los textos absolutos de las puntas se corten al hacer scroll
+                    contentHtml = `
+                        <div class="overflow-x-auto w-full custom-scrollbar pb-8 pt-4">
+                            <div style="padding: 0 120px; min-width: ${uiState.zoom * 100}%;">
+                                <div class="timeline-track-container" style="width: 100%;">
+                                    <div class="timeline-thick-bar w-full"></div>
+                                    ${nodesHtml}
+                                </div>
                             </div>
                         </div>
                     `;
-                });
+                }
 
-                eraDiv.innerHTML = `
-                    <h3 class="font-bold text-2xl mb-1 flex items-center gap-3"><i class="fas fa-hourglass-half text-[var(--primary)]"></i> ${escapeHtml(era)}</h3>
-                    <p class="text-xs text-[var(--text-muted)] uppercase tracking-wider mb-8">${events.length} Evento(s)</p>
-                    <div class="timeline-track-container">
-                        <div class="timeline-thick-bar"></div>
-                        ${nodesHtml}
-                    </div>
-                `;
+                eraDiv.innerHTML = headerHtml + contentHtml;
                 cont.appendChild(eraDiv);
             });
         };
