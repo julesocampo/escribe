@@ -288,13 +288,12 @@
                     <i class="fas fa-arrow-left"></i>
                 </button>
                 <div class="flex-1 min-w-[250px] p-2 rounded-xl" id="tour-target-title">
-                    <input type="text" id="project-title-input" class="clean-input text-3xl font-bold w-full" placeholder="Título de la Novela..." onblur="updateProjectTitle(this.value)">
+                    <textarea id="project-title-input" class="clean-input text-3xl font-bold w-full resize-none block overflow-hidden leading-tight" rows="1" placeholder="Título de la Novela..." onblur="updateProjectTitle(this.value)" oninput="this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px';"></textarea>
                     <p class="text-xs text-[var(--text-muted)] mt-1"><i class="fas fa-info-circle"></i> Haz clic en el título para editarlo. Todo se guarda automáticamente.</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Secciones de Proyecto Unificadas con la estética de "Escribe" -->
                 
                 <div onclick="openSection('core')" id="tour-target-core" class="card card-hover p-6 rounded-3xl cursor-pointer flex flex-col justify-between h-52 group bg-gradient-to-br from-[var(--bg-card)] to-[var(--bg-main)] border-2 border-[var(--primary)] shadow-md hover:shadow-lg relative overflow-hidden">
                     <div class="absolute -right-4 -bottom-4 opacity-10 text-9xl text-[var(--primary)]"><i class="fas fa-seedling"></i></div>
@@ -333,7 +332,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-xl">El Mundo y Voz</h3>
-                            <p class="text-sm text-[var(--text-muted)] mt-1 line-clamp-2">Worldbuilding, POV, Tono y Atmósfera.</p>
+                            <p class="text-sm text-[var(--text-muted)] mt-1 line-clamp-2">Worldbuilding, POV, Localizaciones, Tono y Atmósfera.</p>
                         </div>
                     </div>
                 </div>
@@ -520,14 +519,20 @@
             <!-- Estado Conectado -->
             <div id="drive-actions" class="hidden space-y-4">
                 <button onclick="uploadToDrive()" class="w-full btn-primary py-3 rounded-xl font-bold flex items-center justify-center gap-3 shadow-lg">
-                    <i class="fas fa-cloud-upload-alt text-lg"></i> Guardar en Drive
+                    <i class="fas fa-cloud-upload-alt text-lg"></i> Guardar en Drive (Backup Local)
                 </button>
-                <button onclick="downloadFromDrive()" class="w-full py-3 rounded-xl border-2 border-[var(--primary)] text-[var(--primary)] font-bold flex items-center justify-center gap-3 hover:bg-[var(--primary)] hover:text-white transition-colors">
-                    <i class="fas fa-cloud-download-alt text-lg"></i> Descargar de Drive
+                <button onclick="fetchDriveProjects()" class="w-full py-3 rounded-xl border-2 border-[var(--primary)] text-[var(--primary)] font-bold flex items-center justify-center gap-3 hover:bg-[var(--primary)] hover:text-white transition-colors">
+                    <i class="fas fa-cloud-download-alt text-lg"></i> Explorar Copia en Drive
                 </button>
-                <div class="text-xs text-red-500 text-left mt-3 bg-red-50 p-3 rounded-lg border border-red-100 flex gap-2 items-start">
-                    <i class="fas fa-exclamation-triangle mt-1"></i> 
-                    <p><strong>Cuidado:</strong> Al descargar, se sobrescribirán los proyectos que tengas actualmente en la memoria de este dispositivo.</p>
+                
+                <div id="drive-projects-list" class="hidden mt-4 text-left border-t border-[var(--border-color)] pt-4">
+                    <h3 class="font-bold text-sm mb-3 flex justify-between items-center">
+                        Proyectos en Drive:
+                        <button onclick="document.getElementById('drive-projects-list').classList.add('hidden')" class="text-xs text-[var(--text-muted)] hover:text-red-500">Ocultar</button>
+                    </h3>
+                    <div id="drive-projects-container" class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar pr-2">
+                        <!-- Projects injected here -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -732,7 +737,7 @@
             settings: { theme: 'light', font: 'sans' }
         };
 
-        // GESTIÓN DEL ESTADO VISUAL DE LA CRONOLOGÍA (Para el Zoom y el Modo Lista)
+        // GESTIÓN DEL ESTADO VISUAL DE LA CRONOLOGÍA
         window.timelineUIState = {};
 
         const SECTIONS_META = {
@@ -750,6 +755,7 @@
             ],
             world: [
                 { id: 'worldbuilding', label: 'Worldbuilding', icon: 'fa-globe', placeholder: '¿Cómo es el mundo de la historia?' },
+                { id: 'locations', label: 'Localizaciones', icon: 'fa-map-marked-alt', type: 'custom-locations' }, // Nuevo campo
                 { id: 'pov', label: 'Punto de Vista (POV)', icon: 'fa-eye', placeholder: '¿Quién narra la historia?' },
                 { id: 'tone', label: 'Tono y Atmósfera', icon: 'fa-cloud-moon', placeholder: '¿Qué emociones quieres evocar?' },
                 { id: 'brainstorming', label: 'Lluvia de Ideas', icon: 'fa-bolt', placeholder: 'Ideas sueltas...' },
@@ -786,7 +792,7 @@
 
         // CONFIGURACIÓN DEL RECORRIDO GUIADO INTERACTIVO
         const INTERACTIVE_TOUR_STEPS = [
-            { view: 'home', targetSelector: '#tour-target-newproj', title: 'Mis Proyectos', text: 'Bienvenido. Aquí verás todas tus obras guardadas. Usa este botón cuando quieras crear una nueva novela.', prepare: () => { if (!window.APP_STATE.projects || window.APP_STATE.projects.length === 0) { const demoProj = { id: 'proj_demo', title: "Mi Novela Demo", updatedAt: Date.now(), sections: { core: { premise: "Un escritor descubre un portal en su máquina de escribir..." }, world: {}, structure: {} }, characters: [{ id: 'c1', name: 'Elena', role: 'Protagonista', desire: 'Desvelar la verdad', need: 'Aceptar el pasado' }], timelineEvents: [{ id: 'e1', title: 'El Descubrimiento', era: 'Principal', year: '2026', desc: 'Encuentra el manuscrito antiguo.' }], chapters: [{ id: 'ch1', title: 'Capítulo 1: El Comienzo', content: 'La noche era fría y la lluvia golpeaba con fuerza los cristales del despacho...' }] }; window.APP_STATE.projects.push(demoProj); window.APP_STATE.activeProjectId = demoProj.id; saveData(); } else { window.APP_STATE.activeProjectId = window.APP_STATE.projects[0].id; } } },
+            { view: 'home', targetSelector: '#tour-target-newproj', title: 'Mis Proyectos', text: 'Bienvenido. Aquí verás todas tus obras guardadas. Usa este botón cuando quieras crear una nueva novela.', prepare: () => { if (!window.APP_STATE.projects || window.APP_STATE.projects.length === 0) { const demoProj = { id: 'proj_demo', title: "Mi Novela Demo", updatedAt: Date.now(), sections: { core: { premise: "Un escritor descubre un portal en su máquina de escribir..." }, world: {}, structure: {} }, characters: [{ id: 'c1', name: 'Elena', role: 'Protagonista', desire: 'Desvelar la verdad', need: 'Aceptar el pasado' }], timelineEvents: [{ id: 'e1', title: 'El Descubrimiento', era: 'Principal', year: '2026', desc: 'Encuentra el manuscrito antiguo.' }], chapters: [{ id: 'ch1', title: 'Capítulo 1: El Comienzo', content: 'La noche era fría y la lluvia golpeaba con fuerza los cristales del despacho...' }], locations: [] }; window.APP_STATE.projects.push(demoProj); window.APP_STATE.activeProjectId = demoProj.id; saveData(); } else { window.APP_STATE.activeProjectId = window.APP_STATE.projects[0].id; } } },
             { view: 'project', targetSelector: '#tour-target-title', title: 'Título del Proyecto', text: 'Haz clic en el título de la obra para editarlo en cualquier momento. ¡Todo se guarda solo!' },
             { view: 'project', targetSelector: '#tour-target-core', title: '01. El Núcleo', text: 'Define la Premisa, el Tema, los Riesgos y el Final. Será la brújula narrative que guíe tu historia.' },
             { view: 'characters', targetSelector: '#tour-target-minigame', title: 'Personajes y Minijuego', text: 'Crea fichas completas y atrévete a jugar a este minijuego. Te lanzará preguntas para conocerlos a fondo.' },
@@ -798,9 +804,10 @@
 
         let activeTourIndex = 0;
 
-        // ------------- SISTEMA DE GOOGLE DRIVE SYNC -------------
+        // ------------- SISTEMA DE GOOGLE DRIVE SYNC MEJORADO -------------
         let tokenClient;
         let driveToken = null;
+        window.driveBackupData = null; // Guardará en memoria el JSON del Drive temporalmente
         const DRIVE_CLIENT_ID = '974564044102-0f57svmcnht8udoh3f0oeasj3j1kfc9g.apps.googleusercontent.com';
         
         window.gisLoaded = function() {
@@ -884,7 +891,7 @@
                 });
 
                 if(res.ok) {
-                    window.showToast("¡Proyectos sincronizados y guardados en Google Drive!", "success");
+                    window.showToast("¡Copia de seguridad guardada en Google Drive!", "success");
                     window.closeModal('drive');
                 } else {
                     throw new Error("HTTP Status: " + res.status);
@@ -895,7 +902,7 @@
             }
         };
 
-        window.downloadFromDrive = async function() {
+        window.fetchDriveProjects = async function() {
             window.showToast("Buscando copia de seguridad...", "info");
             try {
                 const fileId = await getDriveFileId();
@@ -909,25 +916,88 @@
                 });
                 
                 if(res.ok) {
-                    const data = await res.text();
-                    
+                    const dataText = await res.text();
+                    let data;
                     try {
-                        JSON.parse(data); 
+                        data = JSON.parse(dataText); 
                     } catch(jsonErr) {
                         window.showToast("El archivo descargado está corrupto.", "error");
                         return;
                     }
 
-                    localStorage.setItem(STORAGE_KEY, data);
-                    window.showToast("¡Datos restaurados con éxito! Recargando...", "success");
-                    setTimeout(() => location.reload(), 1500);
+                    if (!data.projects || data.projects.length === 0) {
+                        window.showToast("La copia de seguridad en Drive está vacía.", "info");
+                        return;
+                    }
+
+                    window.driveBackupData = data;
+                    const container = document.getElementById('drive-projects-container');
+                    container.innerHTML = '';
+                    
+                    data.projects.sort((a,b) => b.updatedAt - a.updatedAt);
+                    
+                    data.projects.forEach(p => {
+                        const dateStr = new Date(p.updatedAt).toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric', hour: '2-digit', minute:'2-digit' });
+                        const div = document.createElement('div');
+                        div.className = "flex justify-between items-center p-3 bg-[var(--bg-main)] border border-[var(--border-color)] rounded-xl";
+                        div.innerHTML = `
+                            <div class="overflow-hidden flex-1 pr-3">
+                                <h4 class="font-bold text-sm truncate">${escapeHtml(p.title)}</h4>
+                                <p class="text-[10px] text-[var(--text-muted)]">Modificado: ${dateStr}</p>
+                            </div>
+                            <button onclick="importProjectFromDrive('${p.id}')" class="shrink-0 bg-[var(--primary)] text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:opacity-80 transition-opacity flex items-center gap-1 shadow-sm">
+                                <i class="fas fa-download"></i> Importar
+                            </button>
+                        `;
+                        container.appendChild(div);
+                    });
+                    
+                    document.getElementById('drive-projects-list').classList.remove('hidden');
+                    
                 } else {
                     throw new Error("HTTP Status: " + res.status);
                 }
             } catch(e) {
                 console.error(e);
-                window.showToast("Ocurrió un error al descargar de Google Drive", "error");
+                window.showToast("Ocurrió un error al conectar con Google Drive", "error");
             }
+        };
+
+        window.importProjectFromDrive = function(driveProjId) {
+            if (!window.driveBackupData || !window.driveBackupData.projects) return;
+            const driveProj = window.driveBackupData.projects.find(p => p.id === driveProjId);
+            if (!driveProj) return;
+
+            const driveDate = new Date(driveProj.updatedAt);
+            const localProjIndex = window.APP_STATE.projects.findIndex(p => p.title.trim().toLowerCase() === driveProj.title.trim().toLowerCase());
+            
+            if (localProjIndex !== -1) {
+                const localProj = window.APP_STATE.projects[localProjIndex];
+                const localDate = new Date(localProj.updatedAt);
+                
+                let newerText = "";
+                if (localDate > driveDate) newerText = "⚠️ ATENCIÓN: El proyecto LOCAL es MÁS RECIENTE.";
+                else if (driveDate > localDate) newerText = "✅ El proyecto de DRIVE es MÁS RECIENTE.";
+                else newerText = "Ambos proyectos tienen la misma fecha de modificación.";
+
+                const msg = `Ya existe un proyecto en tu dispositivo llamado "${driveProj.title}".\n\n` +
+                            `• Modificado en Local: ${localDate.toLocaleString('es-ES')}\n` +
+                            `• Modificado en Drive: ${driveDate.toLocaleString('es-ES')}\n\n` +
+                            `${newerText}\n\n` +
+                            `¿Quieres SOBRESCRIBIR tu proyecto local actual con la versión de Drive?`;
+                            
+                if (!confirm(msg)) return;
+                
+                window.APP_STATE.projects.splice(localProjIndex, 1);
+            }
+            
+            window.APP_STATE.projects = window.APP_STATE.projects.filter(p => p.id !== driveProj.id);
+            
+            window.APP_STATE.projects.push(driveProj);
+            saveData();
+            
+            if (window.APP_STATE.currentView === 'home') window.renderHome();
+            window.showToast("Proyecto importado con éxito", "success");
         };
         // --------------------------------------------------------
 
@@ -1272,7 +1342,7 @@
                     if (p.sections && p.sections[secKey]) {
                         let hasContent = false;
                         (SECTION_FIELDS[secKey] || []).forEach(f => {
-                            if(p.sections[secKey][f.id] && p.sections[secKey][f.id].trim() !== '') {
+                            if(f.type !== 'custom-locations' && p.sections[secKey][f.id] && p.sections[secKey][f.id].trim() !== '') {
                                 txt += `>> ${f.label}:\n${p.sections[secKey][f.id]}\n\n`;
                                 hasContent = true;
                             }
@@ -1301,6 +1371,19 @@
             }
 
             printSectionTXT('exp-world', 'world', 'El Mundo y Voz');
+            
+            // Exportar Localizaciones
+            if (document.getElementById('exp-world').checked && p.locations && p.locations.length > 0) {
+                txt += `>> LOCALIZACIONES:\n`;
+                p.locations.forEach(loc => {
+                    txt += `- NOMBRE: ${loc.name}\n`;
+                    if(loc.biome) txt += `  BIOMA/CLIMA: ${loc.biome}\n`;
+                    if(loc.description) txt += `  DESCRIPCIÓN: ${loc.description}\n`;
+                    if(loc.details) txt += `  DETALLES: ${loc.details}\n`;
+                    txt += `\n`;
+                });
+            }
+
             printSectionTXT('exp-struct', 'structure', 'Estructura');
 
             if (document.getElementById('exp-timeline').checked) {
@@ -1362,6 +1445,7 @@
                 if (projectData && projectData.title) {
                     projectData.id = 'proj_' + Date.now();
                     projectData.updatedAt = Date.now();
+                    if(!projectData.locations) projectData.locations = []; // Compatibilidad hacia atrás
                     
                     window.APP_STATE.projects.unshift(projectData);
                     window.APP_STATE.activeProjectId = projectData.id;
@@ -1422,6 +1506,7 @@
                 id: 'proj_' + Date.now(),
                 title: "Nueva Historia", updatedAt: Date.now(),
                 sections: { core: {}, world: {}, structure: {} },
+                locations: [],
                 characters: [], timelineEvents: [], chapters: [] 
             };
             window.APP_STATE.projects.unshift(newProj);
@@ -1472,13 +1557,115 @@
         window.renderProjectDash = function() {
             const p = getActiveProject();
             if(!p) return;
-            document.getElementById('project-title-input').value = p.title;
+            const titleInput = document.getElementById('project-title-input');
+            titleInput.value = p.title;
+            // Asegurarse de que el textarea crezca para abarcar todo el título
+            setTimeout(() => {
+                titleInput.style.height = 'auto';
+                titleInput.style.height = titleInput.scrollHeight + 'px';
+            }, 10);
         };
 
         window.updateProjectTitle = function(val) {
             const p = getActiveProject();
             if(p) { p.title = val.trim() || "Sin Título"; p.updatedAt = Date.now(); debounceSave(); }
         };
+
+        /* -------- NUEVO SISTEMA DE LOCALIZACIONES -------- */
+        window.toggleLocationsAccordion = function() {
+            const cont = document.getElementById('locations-container');
+            const icon = document.getElementById('icon-locations');
+            cont.classList.toggle('hidden');
+            if(cont.classList.contains('hidden')) icon.style.transform = 'rotate(0deg)';
+            else icon.style.transform = 'rotate(180deg)';
+        };
+
+        window.addLocation = function() {
+            const p = getActiveProject();
+            if(!p.locations) p.locations = [];
+            p.locations.push({ id: 'loc_' + Date.now(), name: 'Nueva Localización', description: '', biome: '', details: '' });
+            p.updatedAt = Date.now(); debounceSave();
+            window.renderLocations();
+        };
+
+        window.deleteLocation = function(id) {
+            if(!confirm('¿Borrar esta localización de forma permanente?')) return;
+            const p = getActiveProject();
+            p.locations = p.locations.filter(l => l.id !== id);
+            p.updatedAt = Date.now(); debounceSave();
+            window.renderLocations();
+        };
+
+        window.updateLocation = function(id, field, val) {
+            const p = getActiveProject();
+            const loc = p.locations.find(l => l.id === id);
+            if(loc) {
+                loc[field] = val;
+                p.updatedAt = Date.now(); debounceSave();
+                if(field === 'name') {
+                    const titleEl = document.getElementById('loc-title-' + id);
+                    if(titleEl) titleEl.textContent = val || 'Sin Nombre';
+                }
+            }
+        };
+
+        window.toggleLocationCard = function(id) {
+            const body = document.getElementById('loc-body-' + id);
+            const icon = document.getElementById('loc-icon-' + id);
+            body.classList.toggle('hidden');
+            if(body.classList.contains('hidden')) {
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                icon.style.transform = 'rotate(180deg)';
+                window.triggerAutoExpands();
+            }
+        };
+
+        window.renderLocations = function() {
+            const list = document.getElementById('locations-list');
+            if(!list) return;
+            const p = getActiveProject();
+            if(!p.locations) p.locations = [];
+            
+            list.innerHTML = '';
+            if(p.locations.length === 0) {
+                list.innerHTML = `<div class="col-span-full text-center p-8 text-[var(--text-muted)] italic">Aún no has documentado ninguna ubicación.</div>`;
+                return;
+            }
+
+            p.locations.forEach(loc => {
+                list.innerHTML += `
+                    <div class="card rounded-2xl border border-[var(--border-color)] overflow-hidden shadow-sm flex flex-col">
+                        <div class="flex justify-between items-center p-4 bg-[var(--bg-card)] border-b border-[var(--border-color)] cursor-pointer hover:bg-[var(--bg-main)] transition-colors" onclick="toggleLocationCard('${loc.id}')">
+                            <h4 id="loc-title-${loc.id}" class="font-bold text-[var(--text-main)] truncate pr-4">${escapeHtml(loc.name)}</h4>
+                            <div class="flex items-center gap-3 shrink-0">
+                                <button onclick="event.stopPropagation(); window.deleteLocation('${loc.id}')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg opacity-70 hover:opacity-100 transition-opacity"><i class="fas fa-trash-alt"></i></button>
+                                <i class="fas fa-chevron-down text-[var(--text-muted)] transition-transform duration-300" id="loc-icon-${loc.id}"></i>
+                            </div>
+                        </div>
+                        <div id="loc-body-${loc.id}" class="hidden p-5 space-y-4 bg-[var(--bg-card)]">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-[var(--text-muted)]">Nombre</label>
+                                <input type="text" value="${escapeHtml(loc.name)}" oninput="window.updateLocation('${loc.id}', 'name', this.value)" class="w-full p-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-main)] text-sm font-bold">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-[var(--text-muted)]">Bioma / Clima</label>
+                                <input type="text" value="${escapeHtml(loc.biome || '')}" oninput="window.updateLocation('${loc.id}', 'biome', this.value)" class="w-full p-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-main)] text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-[var(--text-muted)]">Descripción</label>
+                                <textarea oninput="window.updateLocation('${loc.id}', 'description', this.value)" class="auto-expand w-full p-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-main)] text-sm leading-relaxed">${escapeHtml(loc.description || '')}</textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider mb-2 text-[var(--text-muted)]">Otros Detalles</label>
+                                <textarea oninput="window.updateLocation('${loc.id}', 'details', this.value)" class="auto-expand w-full p-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-main)] text-sm leading-relaxed">${escapeHtml(loc.details || '')}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        };
+        /* ------------------------------------------------- */
 
         window.openSection = function(secId) {
             window.APP_STATE.activeSectionId = secId;
@@ -1496,16 +1683,35 @@
                 const val = p.sections[secId][field.id] || '';
                 const div = document.createElement('div');
                 div.className = 'card rounded-3xl p-6 shadow-sm flex flex-col h-full';
+                
                 if(field.id === 'notes') div.classList.add('border-t-8', 'border-t-[var(--primary)]', 'lg:col-span-2');
-
-                div.innerHTML = `
-                    <h3 class="font-bold text-lg mb-4 flex items-center gap-2 text-[var(--primary)] border-b border-[var(--border-color)] pb-3">
-                        <i class="fas ${field.icon} text-xl"></i> ${field.label}
-                    </h3>
-                    <textarea oninput="window.updateSectionField('${secId}', '${field.id}', this.value)" 
-                              class="auto-expand p-4 rounded-xl text-sm sm:text-base leading-relaxed bg-opacity-50 w-full" 
-                              placeholder="${field.placeholder}">${escapeHtml(val)}</textarea>
-                `;
+                
+                // Trato específico para el campo Localizaciones
+                if (field.type === 'custom-locations') {
+                    div.classList.add('lg:col-span-2', 'p-0', 'bg-transparent', 'border-0', 'shadow-none');
+                    div.innerHTML = `
+                        <div class="border border-[var(--border-color)] rounded-3xl overflow-hidden bg-[var(--bg-card)] shadow-sm h-full flex flex-col">
+                            <button onclick="toggleLocationsAccordion()" class="w-full p-6 text-left font-bold flex justify-between items-center bg-[var(--bg-card)] hover:bg-[var(--bg-main)] transition-colors focus:outline-none">
+                                <span class="flex items-center gap-3 text-xl text-[var(--primary)]"><i class="fas fa-map-marked-alt w-6 text-center text-2xl"></i> ${field.label}</span>
+                                <i class="fas fa-chevron-down transition-transform duration-300 text-[var(--text-muted)] text-xl" id="icon-locations"></i>
+                            </button>
+                            <div id="locations-container" class="hidden p-6 border-t border-[var(--border-color)] bg-[var(--bg-main)] bg-opacity-30 flex-1">
+                                <button onclick="addLocation()" class="btn-primary px-5 py-3 rounded-xl mb-6 text-sm font-bold shadow flex items-center justify-center gap-2 w-full sm:w-auto"><i class="fas fa-plus"></i> Nueva Localización</button>
+                                <div id="locations-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                            </div>
+                        </div>
+                    `;
+                    setTimeout(window.renderLocations, 0);
+                } else {
+                    div.innerHTML = `
+                        <h3 class="font-bold text-lg mb-4 flex items-center gap-2 text-[var(--primary)] border-b border-[var(--border-color)] pb-3">
+                            <i class="fas ${field.icon} text-xl"></i> ${field.label}
+                        </h3>
+                        <textarea oninput="window.updateSectionField('${secId}', '${field.id}', this.value)" 
+                                  class="auto-expand p-4 rounded-xl text-sm sm:text-base leading-relaxed bg-opacity-50 w-full" 
+                                  placeholder="${field.placeholder}">${escapeHtml(val)}</textarea>
+                    `;
+                }
                 container.appendChild(div);
             });
             navigate('section');
@@ -1821,10 +2027,25 @@
             let worldHtml = '';
             if(p.sections && p.sections.world) {
                 (SECTION_FIELDS['world'] || []).forEach(f => {
-                    if(p.sections.world[f.id] && p.sections.world[f.id].trim() !== '') {
+                    if(f.type !== 'custom-locations' && p.sections.world[f.id] && p.sections.world[f.id].trim() !== '') {
                         worldHtml += `<div class="mb-5 last:mb-0"><strong class="text-[var(--primary)] flex items-center gap-2 text-xs uppercase tracking-wider mb-2"><i class="fas ${f.icon}"></i> ${f.label}</strong><p class="whitespace-pre-wrap text-sm leading-relaxed font-serif text-[var(--text-main)]">${escapeHtml(p.sections.world[f.id])}</p></div>`;
                     }
                 });
+            }
+            // Inyectar Localizaciones en las Referencias del Mundo
+            if (p.locations && p.locations.length > 0) {
+                worldHtml += `<div class="mt-6 pt-4 border-t border-[var(--border-color)]"><strong class="text-[var(--primary)] flex items-center gap-2 text-xs uppercase tracking-wider mb-4"><i class="fas fa-map-marked-alt"></i> Localizaciones</strong><div class="space-y-4">`;
+                p.locations.forEach(loc => {
+                    worldHtml += `
+                        <div class="bg-[var(--bg-main)] p-4 rounded-xl border border-[var(--border-color)] shadow-sm">
+                            <h4 class="font-bold text-lg text-[var(--primary)] mb-2">${escapeHtml(loc.name)}</h4>
+                            ${loc.biome ? `<p class="text-xs mb-2 text-[var(--text-main)]"><strong class="uppercase text-[var(--text-muted)]">Bioma/Clima:</strong> ${escapeHtml(loc.biome)}</p>` : ''}
+                            ${loc.description ? `<p class="text-sm font-serif mb-2 text-[var(--text-main)]">${escapeHtml(loc.description)}</p>` : ''}
+                            ${loc.details ? `<p class="text-sm font-serif mt-2 border-t border-[var(--border-color)] pt-2 text-[var(--text-main)]"><strong class="text-xs uppercase font-sans text-[var(--text-muted)]">Otros Detalles:</strong><br>${escapeHtml(loc.details)}</p>` : ''}
+                        </div>
+                    `;
+                });
+                worldHtml += `</div></div>`;
             }
             html += buildAccordion('ref-world', 'fa-globe-europe', 'El Mundo y Voz', worldHtml);
 
