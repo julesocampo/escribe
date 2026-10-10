@@ -263,8 +263,10 @@
 
         </div>
     </nav>
-    <!-- Input oculto para importación de archivos TXT -->
+    
+    <!-- Inputs ocultos para archivos -->
     <input type="file" id="import-file" class="hidden" accept=".txt" onchange="importProject(event)">
+    <input type="file" id="cover-upload" class="hidden" accept="image/*" onchange="handleCoverUpload(event)">
 
     <div id="toast-container"></div>
 
@@ -281,7 +283,7 @@
                 </button>
             </div>
             
-            <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            <div id="projects-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
             
             <div id="empty-projects-msg" class="col-span-full text-center py-20 hidden card rounded-2xl border-dashed">
                 <i class="fas fa-book-open text-6xl mb-4 opacity-40 text-[var(--text-muted)]"></i>
@@ -763,7 +765,7 @@
             ],
             world: [
                 { id: 'worldbuilding', label: 'Worldbuilding', icon: 'fa-globe', placeholder: '¿Cómo es el mundo de la historia?' },
-                { id: 'locations', label: 'Localizaciones', icon: 'fa-map-marked-alt', type: 'custom-locations' }, // Nuevo campo
+                { id: 'locations', label: 'Localizaciones', icon: 'fa-map-marked-alt', type: 'custom-locations' },
                 { id: 'pov', label: 'Punto de Vista (POV)', icon: 'fa-eye', placeholder: '¿Quién narra la historia?' },
                 { id: 'tone', label: 'Tono y Atmósfera', icon: 'fa-cloud-moon', placeholder: '¿Qué emociones quieres evocar?' },
                 { id: 'brainstorming', label: 'Lluvia de Ideas', icon: 'fa-bolt', placeholder: 'Ideas sueltas...' },
@@ -1528,12 +1530,84 @@
                 title: "Nueva Historia", updatedAt: Date.now(),
                 sections: { core: {}, world: {}, structure: {} },
                 locations: [],
-                characters: [], timelineEvents: [], chapters: [] 
+                characters: [], timelineEvents: [], chapters: [], coverImage: null
             };
             window.APP_STATE.projects.unshift(newProj);
             window.APP_STATE.activeProjectId = newProj.id;
             saveData(); navigate('project');
         };
+
+        // ------------- SISTEMA DE SUBIDA DE PORTADAS (REDIMENSIONADO VERTICAL PARA LOCALSTORAGE) -------------
+        window.currentCoverProjectId = null;
+
+        window.triggerCoverUpload = function(id) {
+            window.currentCoverProjectId = id;
+            document.getElementById('cover-upload').click();
+        };
+
+        window.handleCoverUpload = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    // Usar un Canvas para redimensionar la imagen (Priorizando formato retrato)
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 600; // Ancho máximo
+                    const MAX_HEIGHT = 800; // Alto máximo
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Comprimir la imagen al 70% de calidad en formato JPEG
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+
+                    const p = window.APP_STATE.projects.find(proj => proj.id === window.currentCoverProjectId);
+                    if (p) {
+                        p.coverImage = dataUrl;
+                        p.updatedAt = Date.now();
+                        saveData();
+                        renderHome();
+                        showToast("Portada actualizada", "success");
+                    }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            event.target.value = ''; // Reset input
+        };
+
+        window.removeCover = function(id, event) {
+            event.stopPropagation();
+            if(!confirm("¿Eliminar la portada de este proyecto?")) return;
+            const p = window.APP_STATE.projects.find(proj => proj.id === id);
+            if(p) {
+                p.coverImage = null;
+                p.updatedAt = Date.now();
+                saveData();
+                renderHome();
+                showToast("Portada eliminada", "success");
+            }
+        };
+        // -------------------------------------------------------------------------------------------
 
         window.renderHome = function() {
             const grid = document.getElementById('projects-grid');
@@ -1549,20 +1623,46 @@
                 window.APP_STATE.projects.forEach(p => {
                     const dateStr = new Date(p.updatedAt).toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric'});
                     const card = document.createElement('div');
-                    card.className = "card card-hover p-6 rounded-3xl cursor-pointer flex flex-col justify-between min-h-[13rem] h-auto group relative";
+                    
+                    // Asegurar tarjeta en flex-row (horizontal) con altura fija adaptada
+                    card.className = "card card-hover rounded-3xl cursor-pointer flex flex-row h-48 sm:h-56 group relative overflow-hidden";
                     card.onclick = () => { window.APP_STATE.activeProjectId = p.id; window.navigate('project'); };
                     
+                    // La portada ocupa ahora el lado izquierdo (w-2/5 en móvil, md:w-1/3 en PC)
+                    const coverHtml = p.coverImage
+                        ? `<div class="relative w-2/5 md:w-1/3 h-full bg-[var(--bg-main)] overflow-hidden shrink-0 group/cover border-r border-[var(--border-color)]">
+                             <img src="${p.coverImage}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Portada de ${escapeHtml(p.title)}">
+                             <div class="absolute inset-0 bg-black/50 opacity-0 group-hover/cover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center gap-3">
+                                 <button onclick="event.stopPropagation(); window.triggerCoverUpload('${p.id}')" class="bg-white text-gray-800 p-2.5 rounded-xl hover:scale-110 transition-transform shadow flex items-center justify-center w-10 h-10" title="Cambiar portada"><i class="fas fa-camera"></i></button>
+                                 <button onclick="window.removeCover('${p.id}', event)" class="bg-red-500 text-white p-2.5 rounded-xl hover:scale-110 transition-transform shadow flex items-center justify-center w-10 h-10" title="Eliminar portada"><i class="fas fa-trash-alt"></i></button>
+                             </div>
+                           </div>`
+                        : `<div class="relative w-2/5 md:w-1/3 h-full bg-[var(--bg-main)] border-r border-[var(--border-color)] overflow-hidden shrink-0 flex items-center justify-center group/cover">
+                             <span class="text-[var(--text-muted)] font-medium text-xs sm:text-sm flex flex-col items-center gap-2 opacity-60 text-center p-2">
+                                <i class="fas fa-image text-2xl sm:text-3xl mb-1"></i> Sin portada
+                             </span>
+                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover/cover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                                 <button onclick="event.stopPropagation(); window.triggerCoverUpload('${p.id}')" class="bg-white text-gray-800 p-2.5 rounded-xl hover:scale-110 transition-transform shadow flex items-center justify-center w-10 h-10" title="Subir portada"><i class="fas fa-upload"></i></button>
+                             </div>
+                           </div>`;
+
                     card.innerHTML = `
-                        <div class="mb-4">
-                            <div class="flex justify-between items-start mb-3 gap-2">
-                                <h3 class="text-xl font-bold break-words leading-snug">${escapeHtml(p.title)}</h3>
-                                <button onclick="event.stopPropagation(); window.deleteProject('${p.id}')" class="text-red-500 hover:bg-red-500/10 opacity-100 transition-colors p-2 rounded-lg text-lg shrink-0"><i class="fas fa-trash-alt"></i></button>
+                        ${coverHtml}
+                        <div class="p-4 sm:p-5 flex flex-col flex-1 bg-[var(--bg-card)] overflow-hidden">
+                            <div class="mb-2 flex-1 overflow-hidden flex flex-col">
+                                <div class="flex justify-between items-start mb-2 gap-2">
+                                    <h3 class="text-lg sm:text-xl font-bold break-words leading-tight line-clamp-3">${escapeHtml(p.title)}</h3>
+                                    <button onclick="event.stopPropagation(); window.deleteProject('${p.id}')" class="text-red-500 hover:bg-red-500/10 opacity-100 sm:opacity-50 sm:group-hover:opacity-100 transition-colors p-1.5 rounded-lg text-base shrink-0"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                                <div class="mt-auto space-y-1">
+                                    <p class="text-xs sm:text-sm text-[var(--text-muted)]"><i class="fas fa-users w-4 text-center"></i> ${(p.characters||[]).length} PJs</p>
+                                    <p class="text-xs sm:text-sm text-[var(--text-muted)]"><i class="fas fa-pen w-4 text-center"></i> ${(p.chapters||[]).length} Caps</p>
+                                </div>
                             </div>
-                            <p class="text-sm text-[var(--text-muted)]"><i class="fas fa-users mr-1"></i> ${(p.characters||[]).length} PJs | <i class="fas fa-pen mr-1 ml-2"></i> ${(p.chapters||[]).length} Caps</p>
-                        </div>
-                        <div class="flex justify-between items-center text-xs font-bold text-[var(--text-muted)] border-t border-[var(--border-color)] pt-4 mt-auto">
-                            <span>Modificado: ${dateStr}</span>
-                            <span class="text-[var(--primary)] group-hover:translate-x-1 transition-transform">Abrir &rarr;</span>
+                            <div class="flex justify-between items-center text-[10px] sm:text-xs font-bold text-[var(--text-muted)] border-t border-[var(--border-color)] pt-3 mt-2">
+                                <span class="truncate pr-2">Mod: ${dateStr}</span>
+                                <span class="text-[var(--primary)] shrink-0 group-hover:translate-x-1 transition-transform"><i class="fas fa-arrow-right"></i></span>
+                            </div>
                         </div>
                     `;
                     grid.appendChild(card);
