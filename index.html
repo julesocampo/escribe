@@ -55,7 +55,7 @@
             --bg-card: #fff0f3;
             --text-main: #5c4d6c;
             --text-muted: #9c89b8;
-            --primary: #e58b99; /* Oscurecido ligeramente para legibilidad del texto blanco */
+            --primary: #e58b99;
             --primary-hover: #d37685;
             --border-color: #f8edeb;
             --modal-overlay: rgba(255, 181, 167, 0.4);
@@ -66,7 +66,7 @@
         [data-font="serif"] { --font-family: 'Merriweather', serif; }
         [data-font="cursive"] { --font-family: 'Caveat', cursive; font-size: 1.1em; }
 
-        /* Helpers de color dinámico para solucionar opacidades con Variables CSS */
+        /* Helpers de color dinámico */
         .bg-primary-5 { background-color: color-mix(in srgb, var(--primary) 5%, transparent); }
         .bg-primary-10 { background-color: color-mix(in srgb, var(--primary) 10%, transparent); }
         .bg-main-30 { background-color: color-mix(in srgb, var(--bg-main) 30%, transparent); }
@@ -108,7 +108,6 @@
             outline: none; border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary);
         }
 
-        /* Estilo para inputs limpios sin borde ni fondo forzado */
         input.clean-input, textarea.clean-input {
             background-color: transparent !important;
             border: none !important;
@@ -124,7 +123,6 @@
             width: 100%;
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-main); border-radius: 4px; }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
@@ -142,13 +140,10 @@
 
         .hidden { display: none !important; }
 
-        .timeline-track-container {
-            position: relative; height: 120px; width: 100%;
-        }
+        .timeline-track-container { position: relative; height: 120px; width: 100%; }
         .timeline-thick-bar {
             position: absolute; top: 50%; left: 0; right: 0; height: 16px;
-            background-color: var(--timeline-bar);
-            border-radius: 8px; transform: translateY(-50%);
+            background-color: var(--timeline-bar); border-radius: 8px; transform: translateY(-50%);
         }
         .timeline-node {
             position: absolute; top: 50%; transform: translate(-50%, -50%);
@@ -166,7 +161,6 @@
         }
         .timeline-node:nth-child(even) .timeline-node-label { top: auto; bottom: 30px; }
 
-        /* Toast Notifications */
         #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
         .toast { padding: 12px 20px; border-radius: 8px; color: white; font-weight: bold; font-size: 0.875rem; opacity: 0; transform: translateY(20px); transition: opacity 0.3s, transform 0.3s; }
         .toast.show { opacity: 1; transform: translateY(0); }
@@ -174,48 +168,16 @@
         .toast.error { background-color: #ef4444; }
         .toast.info { background-color: var(--primary); }
 
-        /* Resaltado del Tour */
         .tour-active-highlight {
-            position: relative !important;
-            z-index: 10001 !important;
-            outline: 3px solid var(--primary) !important;
-            outline-offset: 3px;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4) !important;
-            transition: outline 0.2s ease, box-shadow 0.2s ease;
+            position: relative !important; z-index: 10001 !important;
+            outline: 3px solid var(--primary) !important; outline-offset: 3px;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4) !important; transition: outline 0.2s ease, box-shadow 0.2s ease;
         }
-
-        /* Flechas indicadoras en punta del Popover */
-        #tour-popover {
-            position: fixed;
-            z-index: 10002;
-            transition: top 0.2s ease, left 0.2s ease, transform 0.2s ease;
-        }
-
-        #tour-popover.arrow-top::before {
-            content: ''; position: absolute; top: -10px;
-            left: var(--arrow-left, 50%); transform: translateX(-50%);
-            border-width: 0 10px 10px 10px; border-style: solid;
-            border-color: transparent transparent var(--primary) transparent;
-        }
-        #tour-popover.arrow-top::after {
-            content: ''; position: absolute; top: -7px;
-            left: var(--arrow-left, 50%); transform: translateX(-50%);
-            border-width: 0 9px 9px 9px; border-style: solid;
-            border-color: transparent transparent var(--bg-card) transparent;
-        }
-
-        #tour-popover.arrow-bottom::before {
-            content: ''; position: absolute; bottom: -10px;
-            left: var(--arrow-left, 50%); transform: translateX(-50%);
-            border-width: 10px 10px 0 10px; border-style: solid;
-            border-color: var(--primary) transparent transparent transparent;
-        }
-        #tour-popover.arrow-bottom::after {
-            content: ''; position: absolute; bottom: -7px;
-            left: var(--arrow-left, 50%); transform: translateX(-50%);
-            border-width: 9px 9px 0 9px; border-style: solid;
-            border-color: var(--bg-card) transparent transparent transparent;
-        }
+        #tour-popover { position: fixed; z-index: 10002; transition: top 0.2s ease, left 0.2s ease, transform 0.2s ease; }
+        #tour-popover.arrow-top::before { content: ''; position: absolute; top: -10px; left: var(--arrow-left, 50%); transform: translateX(-50%); border-width: 0 10px 10px 10px; border-style: solid; border-color: transparent transparent var(--primary) transparent; }
+        #tour-popover.arrow-top::after { content: ''; position: absolute; top: -7px; left: var(--arrow-left, 50%); transform: translateX(-50%); border-width: 0 9px 9px 9px; border-style: solid; border-color: transparent transparent var(--bg-card) transparent; }
+        #tour-popover.arrow-bottom::before { content: ''; position: absolute; bottom: -10px; left: var(--arrow-left, 50%); transform: translateX(-50%); border-width: 10px 10px 0 10px; border-style: solid; border-color: var(--primary) transparent transparent transparent; }
+        #tour-popover.arrow-bottom::after { content: ''; position: absolute; bottom: -7px; left: var(--arrow-left, 50%); transform: translateX(-50%); border-width: 9px 9px 0 9px; border-style: solid; border-color: var(--bg-card) transparent transparent transparent; }
     </style>
 </head>
 <body>
@@ -235,7 +197,6 @@
         <div class="flex items-center gap-2 sm:gap-4 shrink-0">
             <span id="save-indicator" class="hidden sm:inline-flex text-xs font-semibold text-[var(--primary)] opacity-0 transition-opacity items-center gap-1"><i class="fas fa-check-circle"></i> Guardado</span>
             
-            <!-- Menú Desplegable -->
             <div class="relative">
                 <button id="main-menu-btn" onclick="toggleMainMenu()" class="text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors p-2 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] shadow-sm relative z-50 flex items-center justify-center w-10 h-10" title="Menú Principal">
                     <i class="fas fa-bars text-lg"></i>
@@ -245,7 +206,6 @@
                     <button onclick="startGuidedTour()" class="w-full text-left px-4 py-3 hover:bg-[var(--bg-main)] transition-colors flex items-center gap-3 font-semibold text-sm">
                         <i class="fas fa-route text-[var(--primary)] w-5 text-center text-lg"></i> Recorrido Guiado
                     </button>
-                    <!-- Funciones Cloud y Exportación -->
                     <button onclick="openDriveModal(); document.getElementById('main-menu-dropdown').classList.add('hidden')" class="w-full text-left px-4 py-3 hover:bg-[var(--bg-main)] transition-colors flex items-center gap-3 font-semibold text-sm border-t border-[var(--border-color)]">
                         <i class="fab fa-google-drive text-[#1fa463] w-5 text-center text-lg"></i> Google Drive Sync
                     </button>
@@ -260,13 +220,12 @@
                     </button>
                 </div>
             </div>
-
         </div>
     </nav>
     
-    <!-- Inputs ocultos para archivos -->
     <input type="file" id="import-file" class="hidden" accept=".txt" onchange="importProject(event)">
     <input type="file" id="cover-upload" class="hidden" accept="image/*" onchange="handleCoverUpload(event)">
+    <input type="file" id="upload-attachment-input" class="hidden" accept=".pdf,.docx,.doc,.txt" onchange="handleAttachmentUpload(event)">
 
     <div id="toast-container"></div>
 
@@ -388,6 +347,21 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Tarjeta de Archivos Adjuntos -->
+                <div onclick="openAttachmentsSection()" class="card card-hover p-6 rounded-3xl cursor-pointer flex flex-col justify-between h-52 group bg-gradient-to-br from-[var(--bg-card)] to-[var(--bg-main)] border-2 border-[var(--primary)] shadow-md hover:shadow-lg relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 opacity-10 text-9xl text-[var(--primary)]"><i class="fas fa-paperclip"></i></div>
+                    <div class="relative z-10 flex flex-col justify-between h-full">
+                        <div class="flex items-start justify-between">
+                            <div class="w-14 h-14 rounded-2xl bg-[var(--primary)] text-white flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-lg"><i class="fas fa-paperclip"></i></div>
+                            <span class="text-xs font-bold text-white uppercase tracking-wider bg-[var(--primary)] px-3 py-1 rounded-full shadow">Archivos</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl">Adjuntos</h3>
+                            <p class="text-sm text-[var(--text-muted)] mt-1 line-clamp-2">Guarda PDF, DOCX o TXT de referencia.</p>
+                        </div>
+                    </div>
+                </div>
                 
             </div>
         </section>
@@ -403,6 +377,34 @@
                 </button>
             </div>
             <div id="section-editor-container" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+        </section>
+
+        <!-- VISTA: Archivos Adjuntos -->
+        <section id="view-attachments" class="view hidden">
+            <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <button onclick="navigate('project')" class="text-[var(--text-muted)] hover:text-[var(--primary)] p-3 rounded-xl card card-hover"><i class="fas fa-arrow-left"></i></button>
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-bold">Archivos Adjuntos</h2>
+                        <p class="text-sm text-[var(--text-muted)] mt-1">Límite por archivo: <b>1.5 MB</b> | Espacio total disponible: <b>3.5 MB</b></p>
+                    </div>
+                </div>
+                <div>
+                    <button onclick="document.getElementById('upload-attachment-input').click()" class="btn-primary px-5 py-3 rounded-xl font-bold shadow-lg flex items-center gap-2">
+                        <i class="fas fa-upload"></i> Subir Archivo
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-[var(--bg-card)] p-5 rounded-2xl border border-[var(--border-color)] mb-8 flex flex-col sm:flex-row sm:items-center gap-4 shadow-sm">
+                <span class="text-sm font-bold text-[var(--text-muted)] shrink-0">Espacio utilizado:</span>
+                <div class="flex-1 bg-[var(--bg-main)] rounded-full h-3 border border-[var(--border-color)] overflow-hidden">
+                    <div id="attachment-space-bar" class="bg-[var(--primary)] h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <span id="attachment-space-text" class="text-sm font-bold text-[var(--primary)] shrink-0 bg-primary-10 px-3 py-1 rounded-xl">0 KB / 3.5 MB</span>
+            </div>
+
+            <div id="attachments-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
 
         <section id="view-escribe" class="view hidden">
@@ -518,7 +520,6 @@
                 Guarda tus proyectos de <b>¡Escribe!</b> de forma segura en Google Drive para continuar trabajando en ellos desde cualquier dispositivo.
             </p>
             
-            <!-- Estado No Conectado -->
             <div id="drive-auth-btn">
                 <button onclick="authDrive()" class="w-full py-3 rounded-xl border border-[var(--border-color)] font-bold flex items-center justify-center gap-3 hover:bg-[var(--bg-main)] transition-colors shadow-sm">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg" alt="Drive" class="w-6 h-6">
@@ -526,7 +527,6 @@
                 </button>
             </div>
 
-            <!-- Estado Conectado -->
             <div id="drive-actions" class="hidden space-y-4">
                 <button onclick="uploadToDrive()" class="w-full btn-primary py-3 rounded-xl font-bold flex items-center justify-center gap-3 shadow-lg">
                     <i class="fas fa-cloud-upload-alt text-lg"></i> Guardar en Drive (Backup Local)
@@ -541,7 +541,6 @@
                         <button onclick="document.getElementById('drive-projects-list').classList.add('hidden')" class="text-xs text-[var(--text-muted)] hover:text-red-500">Ocultar</button>
                     </h3>
                     <div id="drive-projects-container" class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar pr-2">
-                        <!-- Projects injected here -->
                     </div>
                 </div>
             </div>
@@ -590,7 +589,7 @@
         </div>
     </div>
 
-    <!-- Modal Confirmación de Salida de la App -->
+    <!-- Modal Confirmación de Salida -->
     <div id="modal-exit" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-[var(--modal-overlay)] backdrop-blur-sm" onclick="closeModal('exit')"></div>
         <div class="card rounded-3xl shadow-2xl relative z-10 w-full max-w-sm p-6 text-center">
@@ -604,7 +603,7 @@
         </div>
     </div>
 
-    <!-- Modal References (Acordeón) -->
+    <!-- Modal References -->
     <div id="modal-references" class="fixed inset-0 z-[90] hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-[var(--modal-overlay)] backdrop-blur-sm" onclick="closeModal('references')"></div>
         <div class="card rounded-3xl shadow-2xl relative z-10 w-full max-w-3xl p-6 h-[85vh] flex flex-col">
@@ -677,7 +676,7 @@
         </div>
     </div>
 
-    <!-- Modal Minijuego Personajes -->
+    <!-- Modal Minijuego -->
     <div id="modal-minigame" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-[var(--modal-overlay)] backdrop-blur-sm" onclick="closeModal('minigame')"></div>
         <div class="card rounded-3xl shadow-2xl relative z-10 w-full max-w-lg p-6 sm:p-8 transform transition-all text-center flex flex-col items-center">
@@ -714,9 +713,8 @@
         </div>
     </div>
 
-    <!-- Overlay y Popover de Recorrido Guiado Interactivo -->
+    <!-- Recorrido Guiado -->
     <div id="tour-overlay" class="fixed inset-0 z-[10000] bg-black/10 hidden transition-opacity duration-300 pointer-events-auto" onclick="endGuidedTour()"></div>
-
     <div id="tour-popover" class="fixed z-[10002] card p-4 rounded-2xl shadow-2xl w-[260px] sm:w-[280px] hidden transition-all duration-200 border-2 border-[var(--primary)] text-left">
         <div class="flex justify-between items-center mb-2">
             <span id="tour-pop-step" class="text-[10px] font-bold uppercase tracking-wider text-[var(--primary)] bg-primary-10 px-2 py-0.5 rounded-full">1 / 8</span>
@@ -735,7 +733,7 @@
     </div>
 
     <script>
-        // ESTADO GLOBAL DE LA APP Y NAVEGACIÓN DE HISTORIAL (HTML5 HISTORY)
+        // ESTADO GLOBAL DE LA APP Y NAVEGACIÓN DE HISTORIAL
         const STORAGE_KEY = 'arquitecto_novelas_data';
         window.APP_STATE = {
             projects: [], 
@@ -747,12 +745,9 @@
             settings: { theme: 'light', font: 'sans' }
         };
 
-        // GESTIÓN DEL ESTADO VISUAL DE LA CRONOLOGÍA
         window.timelineUIState = {};
 
-        const SECTIONS_META = {
-            core: "El Núcleo", world: "El Mundo y la Voz", structure: "La Estructura"
-        };
+        const SECTIONS_META = { core: "El Núcleo", world: "El Mundo y la Voz", structure: "La Estructura" };
 
         const SECTION_FIELDS = {
             core: [
@@ -800,9 +795,8 @@
             "¿Qué es lo peor que podrían decirle para destrozar su autoestima?"
         ];
 
-        // CONFIGURACIÓN DEL RECORRIDO GUIADO INTERACTIVO
         const INTERACTIVE_TOUR_STEPS = [
-            { view: 'home', targetSelector: '#tour-target-newproj', title: 'Mis Proyectos', text: 'Bienvenido. Aquí verás todas tus obras guardadas. Usa este botón cuando quieras crear una nueva novela.', prepare: () => { if (!window.APP_STATE.projects || window.APP_STATE.projects.length === 0) { const demoProj = { id: 'proj_demo', title: "Mi Novela Demo", updatedAt: Date.now(), sections: { core: { premise: "Un escritor descubre un portal en su máquina de escribir..." }, world: {}, structure: {} }, characters: [{ id: 'c1', name: 'Elena', role: 'Protagonista', desire: 'Desvelar la verdad', need: 'Aceptar el pasado' }], timelineEvents: [{ id: 'e1', title: 'El Descubrimiento', era: 'Principal', year: '2026', desc: 'Encuentra el manuscrito antiguo.' }], chapters: [{ id: 'ch1', title: 'Capítulo 1: El Comienzo', content: 'La noche era fría y la lluvia golpeaba con fuerza los cristales del despacho...' }], locations: [] }; window.APP_STATE.projects.push(demoProj); window.APP_STATE.activeProjectId = demoProj.id; saveData(); } else { window.APP_STATE.activeProjectId = window.APP_STATE.projects[0].id; } } },
+            { view: 'home', targetSelector: '#tour-target-newproj', title: 'Mis Proyectos', text: 'Bienvenido. Aquí verás todas tus obras guardadas. Usa este botón cuando quieras crear una nueva novela.', prepare: () => { if (!window.APP_STATE.projects || window.APP_STATE.projects.length === 0) { const demoProj = { id: 'proj_demo', title: "Mi Novela Demo", updatedAt: Date.now(), sections: { core: { premise: "Un escritor descubre un portal en su máquina de escribir..." }, world: {}, structure: {} }, characters: [{ id: 'c1', name: 'Elena', role: 'Protagonista', desire: 'Desvelar la verdad', need: 'Aceptar el pasado' }], timelineEvents: [{ id: 'e1', title: 'El Descubrimiento', era: 'Principal', year: '2026', desc: 'Encuentra el manuscrito antiguo.' }], chapters: [{ id: 'ch1', title: 'Capítulo 1: El Comienzo', content: 'La noche era fría y la lluvia golpeaba con fuerza los cristales del despacho...' }], locations: [], attachments: [] }; window.APP_STATE.projects.push(demoProj); window.APP_STATE.activeProjectId = demoProj.id; saveData(); } else { window.APP_STATE.activeProjectId = window.APP_STATE.projects[0].id; } } },
             { view: 'project', targetSelector: '#tour-target-title', title: 'Título del Proyecto', text: 'Haz clic en el título de la obra para editarlo en cualquier momento. ¡Todo se guarda solo!' },
             { view: 'project', targetSelector: '#tour-target-core', title: '01. El Núcleo', text: 'Define la Premisa, el Tema, los Riesgos y el Final. Será la brújula narrative que guíe tu historia.' },
             { view: 'characters', targetSelector: '#tour-target-minigame', title: 'Personajes y Minijuego', text: 'Crea fichas completas y atrévete a jugar a este minijuego. Te lanzará preguntas para conocerlos a fondo.' },
@@ -814,10 +808,10 @@
 
         let activeTourIndex = 0;
 
-        // ------------- SISTEMA DE GOOGLE DRIVE SYNC MEJORADO -------------
+        // DRIVE SYNC
         let tokenClient;
         let driveToken = null;
-        window.driveBackupData = null; // Guardará en memoria el JSON del Drive temporalmente
+        window.driveBackupData = null; 
         const DRIVE_CLIENT_ID = '974564044102-0f57svmcnht8udoh3f0oeasj3j1kfc9g.apps.googleusercontent.com';
         
         window.gisLoaded = function() {
@@ -1002,14 +996,12 @@
             }
             
             window.APP_STATE.projects = window.APP_STATE.projects.filter(p => p.id !== driveProj.id);
-            
             window.APP_STATE.projects.push(driveProj);
             saveData();
             
             if (window.APP_STATE.currentView === 'home') window.renderHome();
             window.showToast("Proyecto importado con éxito", "success");
         };
-        // --------------------------------------------------------
 
         window.startGuidedTour = function() {
             document.getElementById('main-menu-dropdown').classList.add('hidden');
@@ -1037,7 +1029,6 @@
             if (!step) return;
 
             if (step.prepare) step.prepare();
-
             window.navigate(step.view, false);
 
             setTimeout(() => {
@@ -1051,17 +1042,11 @@
                 const prevBtn = document.getElementById('tour-pop-prev');
                 const nextBtn = document.getElementById('tour-pop-next');
 
-                if (index === 0) {
-                    prevBtn.style.display = 'none';
-                } else {
-                    prevBtn.style.display = 'inline-flex';
-                }
+                if (index === 0) prevBtn.style.display = 'none';
+                else prevBtn.style.display = 'inline-flex';
 
-                if (index === INTERACTIVE_TOUR_STEPS.length - 1) {
-                    nextBtn.innerHTML = '¡A escribir! <i class="fas fa-check ml-1"></i>';
-                } else {
-                    nextBtn.innerHTML = 'Siguiente <i class="fas fa-arrow-right ml-1"></i>';
-                }
+                if (index === INTERACTIVE_TOUR_STEPS.length - 1) nextBtn.innerHTML = '¡A escribir! <i class="fas fa-check ml-1"></i>';
+                else nextBtn.innerHTML = 'Siguiente <i class="fas fa-arrow-right ml-1"></i>';
 
                 popover.classList.remove('arrow-top', 'arrow-bottom');
                 popover.style.top = '-9999px';
@@ -1089,21 +1074,13 @@
                             arrowDirection = 'arrow-bottom';
                         }
 
-                        if (top < 10) { 
-                            top = 10; 
-                            arrowDirection = 'arrow-top'; 
-                        }
-                        if (top + popHeight > window.innerHeight - 10) { 
-                            top = window.innerHeight - popHeight - 10; 
-                            arrowDirection = 'arrow-bottom'; 
-                        }
+                        if (top < 10) { top = 10; arrowDirection = 'arrow-top'; }
+                        if (top + popHeight > window.innerHeight - 10) { top = window.innerHeight - popHeight - 10; arrowDirection = 'arrow-bottom'; }
 
                         let targetCenter = rect.left + (rect.width / 2);
                         let left = targetCenter - (popWidth / 2);
 
-                        if (left + popWidth > window.innerWidth - 12) {
-                            left = window.innerWidth - popWidth - 12;
-                        }
+                        if (left + popWidth > window.innerWidth - 12) left = window.innerWidth - popWidth - 12;
                         if (left < 12) left = 12;
 
                         let arrowLeft = targetCenter - left;
@@ -1111,7 +1088,6 @@
 
                         popover.style.setProperty('--arrow-left', `${arrowLeft}px`);
                         popover.classList.add(arrowDirection);
-
                         popover.style.top = `${top}px`;
                         popover.style.left = `${left}px`;
                         popover.style.transform = 'none';
@@ -1186,7 +1162,6 @@
             setTimeout(() => { t.classList.remove('show'); setTimeout(()=> t.remove(), 300); }, 3000);
         };
 
-        // --- SISTEMA NAVEGACIÓN Y HISTORIAL ANDROID ---
         window.navigate = function(viewName, pushState = true) {
             document.querySelectorAll('.view').forEach(el => el.classList.add('hidden'));
             const target = document.getElementById(`view-${viewName}`);
@@ -1202,6 +1177,7 @@
             if (viewName === 'project') window.renderProjectDash();
             if (viewName === 'timeline') window.renderTimeline();
             if (viewName === 'escribe') window.renderEscribeSection();
+            if (viewName === 'attachments') window.renderAttachments();
 
             window.triggerAutoExpands();
             window.scrollTo(0,0);
@@ -1232,11 +1208,7 @@
             }
         });
 
-        window.confirmExitApp = function() {
-            closeModal('exit');
-            window.history.back();
-        };
-
+        window.confirmExitApp = function() { closeModal('exit'); window.history.back(); };
         window.openModal = function(id) { 
             const m = document.getElementById(`modal-${id}`);
             if(m) { 
@@ -1245,15 +1217,12 @@
                 setTimeout(() => window.triggerAutoExpands(), 50);
             }
         };
-
         window.closeModal = function(id) { 
             const m = document.getElementById(`modal-${id}`);
             if(m) m.classList.add('hidden'); 
         };
 
-        window.toggleMainMenu = function() {
-            document.getElementById('main-menu-dropdown').classList.toggle('hidden');
-        };
+        window.toggleMainMenu = function() { document.getElementById('main-menu-dropdown').classList.toggle('hidden'); };
         
         document.addEventListener('click', function(e) {
             const btn = document.getElementById('main-menu-btn');
@@ -1311,13 +1280,8 @@
                     }
                 }
             }
-            
-            if (type === 'know') {
-                window.showToast("¡Genial! Tienes claras sus motivaciones.", "success");
-            } else {
-                window.showToast("¡No pasa nada, déjalo macerar en tu cabeza!", "info");
-            }
-
+            if (type === 'know') window.showToast("¡Genial! Tienes claras sus motivaciones.", "success");
+            else window.showToast("¡No pasa nada, déjalo macerar en tu cabeza!", "info");
             nextMinigameQuestion();
         };
 
@@ -1395,7 +1359,6 @@
 
             printSectionTXT('exp-world', 'world', 'El Mundo y Voz');
             
-            // Exportar Localizaciones
             if (document.getElementById('exp-world').checked && p.locations && p.locations.length > 0) {
                 txt += `>> LOCALIZACIONES:\n`;
                 p.locations.forEach(loc => {
@@ -1427,7 +1390,6 @@
                 } else { txt += `(No hay eventos creado)\n\n`; }
             }
             
-            // Datos estructurados para importación
             txt += `\n\n[=== ESCRIBE_APP_DATA_BEGIN ===]\n`;
             txt += JSON.stringify(p);
             txt += `\n[=== ESCRIBE_APP_DATA_END ===]\n`;
@@ -1468,7 +1430,8 @@
                 if (projectData && projectData.title) {
                     projectData.id = 'proj_' + Date.now();
                     projectData.updatedAt = Date.now();
-                    if(!projectData.locations) projectData.locations = []; // Compatibilidad hacia atrás
+                    if(!projectData.locations) projectData.locations = [];
+                    if(!projectData.attachments) projectData.attachments = [];
                     
                     window.APP_STATE.projects.unshift(projectData);
                     window.APP_STATE.activeProjectId = projectData.id;
@@ -1491,7 +1454,6 @@
             document.documentElement.setAttribute('data-font', window.APP_STATE.settings.font || 'sans');
         }
 
-        /* --- NUEVO SISTEMA DE AUTO-EXPANSIÓN PARA TEXTAREAS --- */
         function setupAutoExpand() {
             document.addEventListener('input', function(e) {
                 if (e.target.tagName.toLowerCase() === 'textarea' && e.target.classList.contains('auto-expand')) {
@@ -1501,14 +1463,9 @@
         }
         
         function autoExpandNode(node) { 
-            // Límite de seguridad: 3000px es aprox 5-6 páginas estándar de un solo tirón
             const MAX_HEIGHT = 3000;
-            
-            // Se resetea la altura momentáneamente para poder recalcular correctamente si se ha borrado texto
             node.style.height = 'auto'; 
-            
             let newScrollHeight = node.scrollHeight;
-            
             if (newScrollHeight > MAX_HEIGHT) {
                 node.style.height = MAX_HEIGHT + 'px';
                 node.style.overflowY = 'auto';
@@ -1530,14 +1487,13 @@
                 title: "Nueva Historia", updatedAt: Date.now(),
                 sections: { core: {}, world: {}, structure: {} },
                 locations: [],
-                characters: [], timelineEvents: [], chapters: [], coverImage: null
+                characters: [], timelineEvents: [], chapters: [], attachments: [], coverImage: null
             };
             window.APP_STATE.projects.unshift(newProj);
             window.APP_STATE.activeProjectId = newProj.id;
             saveData(); navigate('project');
         };
 
-        // ------------- SISTEMA DE SUBIDA DE PORTADAS (REDIMENSIONADO VERTICAL PARA LOCALSTORAGE) -------------
         window.currentCoverProjectId = null;
 
         window.triggerCoverUpload = function(id) {
@@ -1553,10 +1509,9 @@
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
-                    // Usar un Canvas para redimensionar la imagen (Priorizando formato retrato)
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 600; // Ancho máximo
-                    const MAX_HEIGHT = 800; // Alto máximo
+                    const MAX_WIDTH = 600;
+                    const MAX_HEIGHT = 800;
                     let width = img.width;
                     let height = img.height;
 
@@ -1577,7 +1532,6 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    // Comprimir la imagen al 70% de calidad en formato JPEG
                     const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
 
                     const p = window.APP_STATE.projects.find(proj => proj.id === window.currentCoverProjectId);
@@ -1592,7 +1546,7 @@
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
-            event.target.value = ''; // Reset input
+            event.target.value = '';
         };
 
         window.removeCover = function(id, event) {
@@ -1607,7 +1561,6 @@
                 showToast("Portada eliminada", "success");
             }
         };
-        // -------------------------------------------------------------------------------------------
 
         window.renderHome = function() {
             const grid = document.getElementById('projects-grid');
@@ -1624,20 +1577,18 @@
                     const dateStr = new Date(p.updatedAt).toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric'});
                     const card = document.createElement('div');
                     
-                    // Asegurar tarjeta en flex-row (horizontal) con altura fija adaptada
-                    card.className = "card card-hover rounded-3xl cursor-pointer flex flex-row h-48 sm:h-56 group relative overflow-hidden";
+                    card.className = "card card-hover rounded-3xl cursor-pointer flex flex-row h-48 sm:h-56 md:h-64 group relative overflow-hidden";
                     card.onclick = () => { window.APP_STATE.activeProjectId = p.id; window.navigate('project'); };
                     
-                    // La portada ocupa ahora el lado izquierdo (w-2/5 en móvil, md:w-1/3 en PC)
                     const coverHtml = p.coverImage
-                        ? `<div class="relative w-2/5 md:w-1/3 h-full bg-[var(--bg-main)] overflow-hidden shrink-0 group/cover border-r border-[var(--border-color)]">
+                        ? `<div class="relative w-32 sm:w-40 md:w-48 h-full bg-[var(--bg-main)] overflow-hidden shrink-0 group/cover border-r border-[var(--border-color)]">
                              <img src="${p.coverImage}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Portada de ${escapeHtml(p.title)}">
                              <div class="absolute inset-0 bg-black/50 opacity-0 group-hover/cover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center gap-3">
                                  <button onclick="event.stopPropagation(); window.triggerCoverUpload('${p.id}')" class="bg-white text-gray-800 p-2.5 rounded-xl hover:scale-110 transition-transform shadow flex items-center justify-center w-10 h-10" title="Cambiar portada"><i class="fas fa-camera"></i></button>
                                  <button onclick="window.removeCover('${p.id}', event)" class="bg-red-500 text-white p-2.5 rounded-xl hover:scale-110 transition-transform shadow flex items-center justify-center w-10 h-10" title="Eliminar portada"><i class="fas fa-trash-alt"></i></button>
                              </div>
                            </div>`
-                        : `<div class="relative w-2/5 md:w-1/3 h-full bg-[var(--bg-main)] border-r border-[var(--border-color)] overflow-hidden shrink-0 flex items-center justify-center group/cover">
+                        : `<div class="relative w-32 sm:w-40 md:w-48 h-full bg-[var(--bg-main)] border-r border-[var(--border-color)] overflow-hidden shrink-0 flex items-center justify-center group/cover">
                              <span class="text-[var(--text-muted)] font-medium text-xs sm:text-sm flex flex-col items-center gap-2 opacity-60 text-center p-2">
                                 <i class="fas fa-image text-2xl sm:text-3xl mb-1"></i> Sin portada
                              </span>
@@ -1692,7 +1643,111 @@
             if(p) { p.title = val.trim() || "Sin Título"; p.updatedAt = Date.now(); debounceSave(); }
         };
 
-        /* -------- NUEVO SISTEMA DE LOCALIZACIONES -------- */
+        // ARCHIVOS ADJUNTOS
+        window.openAttachmentsSection = function() {
+            navigate('attachments');
+            window.renderAttachments();
+        };
+
+        window.calculateAttachmentsSize = function(project) {
+            if (!project.attachments) return 0;
+            return project.attachments.reduce((acc, att) => acc + (att.size || 0), 0);
+        };
+
+        window.renderAttachments = function() {
+            const p = getActiveProject();
+            const list = document.getElementById('attachments-list');
+            list.innerHTML = '';
+            
+            if(!p.attachments) p.attachments = [];
+            
+            const totalSize = window.calculateAttachmentsSize(p);
+            const maxSpace = 3.5 * 1024 * 1024; // 3.5 MB límite total
+            const percent = Math.min(100, (totalSize / maxSpace) * 100);
+            
+            document.getElementById('attachment-space-bar').style.width = percent + '%';
+            document.getElementById('attachment-space-text').innerText = (totalSize / 1024).toFixed(1) + ' KB / 3584 KB';
+
+            if(p.attachments.length === 0) {
+                list.innerHTML = '<div class="col-span-full text-center py-10 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl text-[var(--text-muted)] italic">Todavía no has subido ningún documento adjunto.</div>';
+                return;
+            }
+
+            p.attachments.forEach(att => {
+                let icon = 'fa-file-alt text-gray-500';
+                if(att.name.toLowerCase().endsWith('.pdf')) icon = 'fa-file-pdf text-red-500';
+                if(att.name.toLowerCase().includes('.doc')) icon = 'fa-file-word text-blue-500';
+                
+                const card = document.createElement('div');
+                card.className = 'card p-5 rounded-2xl flex items-center justify-between gap-4 border border-[var(--border-color)] shadow-sm hover:shadow-md transition-shadow';
+                card.innerHTML = `
+                    <div class="flex items-center gap-4 overflow-hidden">
+                        <i class="fas ${icon} text-3xl bg-[var(--bg-main)] p-3 rounded-xl border border-[var(--border-color)] shrink-0"></i>
+                        <div class="flex-1 overflow-hidden">
+                            <h4 class="font-bold text-sm truncate" title="${escapeHtml(att.name)}">${escapeHtml(att.name)}</h4>
+                            <span class="text-xs font-semibold text-[var(--text-muted)]">${(att.size / 1024).toFixed(1)} KB</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 shrink-0">
+                        <a href="${att.data}" download="${escapeHtml(att.name)}" class="text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white p-2.5 rounded-xl transition-colors bg-primary-10"><i class="fas fa-download"></i></a>
+                        <button onclick="window.deleteAttachment('${att.id}')" class="text-red-500 hover:bg-red-500 hover:text-white p-2.5 rounded-xl transition-colors bg-red-50"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        };
+
+        window.handleAttachmentUpload = function(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+
+            const p = getActiveProject();
+            if(!p.attachments) p.attachments = [];
+
+            const MAX_FILE_SIZE = 1.5 * 1024 * 1024; // 1.5 MB por archivo
+            const MAX_TOTAL_SIZE = 3.5 * 1024 * 1024; // 3.5 MB en total
+
+            if(file.size > MAX_FILE_SIZE) {
+                window.showToast("El archivo es demasiado grande. El límite por archivo es de 1.5 MB.", "error");
+                event.target.value = '';
+                return;
+            }
+
+            const currentTotal = window.calculateAttachmentsSize(p);
+            if(currentTotal + file.size > MAX_TOTAL_SIZE) {
+                window.showToast("No hay espacio libre suficiente. El límite total es de 3.5 MB.", "error");
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                p.attachments.push({
+                    id: 'att_' + Date.now(),
+                    name: file.name,
+                    type: file.type,
+                    size: file.size,
+                    data: e.target.result
+                });
+                p.updatedAt = Date.now();
+                saveData();
+                window.renderAttachments();
+                window.showToast("Archivo subido con éxito", "success");
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        };
+
+        window.deleteAttachment = function(id) {
+            if(!confirm("¿Estás seguro de que quieres borrar este archivo adjunto?")) return;
+            const p = getActiveProject();
+            p.attachments = p.attachments.filter(a => a.id !== id);
+            p.updatedAt = Date.now();
+            saveData();
+            window.renderAttachments();
+            window.showToast("Archivo adjunto eliminado", "success");
+        };
+
         window.toggleLocationsAccordion = function() {
             const cont = document.getElementById('locations-container');
             const icon = document.getElementById('icon-locations');
@@ -1786,7 +1841,6 @@
                 `;
             });
         };
-        /* ------------------------------------------------- */
 
         window.openSection = function(secId) {
             window.APP_STATE.activeSectionId = secId;
